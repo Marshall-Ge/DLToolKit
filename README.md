@@ -2,6 +2,7 @@
 
 ### Models
 - [x] [BLIP](models/blip.py)
+- [x] [CLIP](models/clip.py)
 
 ### Components
 - [x] [Cross Attention](models/attention.py)
