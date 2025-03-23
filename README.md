@@ -1,5 +1,5 @@
 ## Implemented Models
-- [x] [Cross Attention](models/cross_attention.py)
+- [x] [Cross Attention](models/cross_attn.py)
 
 ## Environment Setup
 Using conda
