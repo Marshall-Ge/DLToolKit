@@ -1,7 +1,19 @@
 [project]
 name = "mutlimodal-notes"
 version = "0.1.0"
-description = "Add your description here"
+description = "Aims to record codes and notes of multimodal-learning"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "einops>=0.8.1",
+    "ipykernel>=6.29.5",
+    "notebook>=7.3.3",
+    "pandas>=2.2.3",
+]
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
+
+[tool.uv]
+cache-dir = "E:/uv/cache"
