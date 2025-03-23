@@ -1,4 +1,4 @@
-from .cross_attn import CrossAttention, CrossMultiAttention
+from .attention import CrossAttention, CrossMultiAttention
 
 __all__ = [
     'CrossAttention',
