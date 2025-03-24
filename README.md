@@ -2,12 +2,12 @@
 
 ### Models
 - [x] [BLIP](models/blip.py)
-- [x] [CLIP](models/clip.py)
+- [x] [CLIP]()
 
 ### Components
 - [x] [Cross Attention](models/attention.py)
 - [x] [Cross Attention with Multi-Head](models/attention.py)
-- [x] [Vision Transformer](models/transformer.py)
+- [x] [Vision Transformer]()
 
 ## Environment Setup
 Using conda
