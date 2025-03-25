@@ -1,5 +1,5 @@
 [project]
-name = "mutlimodal-notes"
+name = "mutlimodal-tool-box"
 version = "0.1.0"
 description = "Aims to record codes and notes of multimodal-learning"
 readme = "README.md"
