@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "einops>=0.8.1",
+    "fairscale>=0.4.13",
     "ipykernel>=6.29.5",
     "notebook>=7.3.3",
     "pandas>=2.2.3",
@@ -13,14 +14,11 @@ dependencies = [
     "torch>=2.6.0",
     "torchaudio>=2.6.0",
     "torchvision>=0.21.0",
+    "transformers>=4.50.1",
 ]
 
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple/"
-default = true
-
-[tool.uv]
-cache-dir = "E:/uv/cache"
 
 [tool.uv.sources]
 torch = [
