@@ -57,7 +57,7 @@ class Block(nn.Module):
 
 
 ####################################################################################
-# Attention Components: Attention, CrossAttention, CrossMultiAttention
+# Attention Components: Attention, CrossAttention, CrossMultiAttention，AttentionPool2d
 ####################################################################################
 class Attention(nn.Module):
     """ A basic multi-head attention layer
@@ -207,9 +207,30 @@ class CrossAttention(nn.Module):
         out = self.proj_out(out)
         return out, att_weights
 
+class AttentionPool2d(nn.Module):
+    def __init__(self, spacial_dim: int, embed_dim: int, num_heads: int, output_dim: int = None, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0.):
+        super().__init__()
+        self.positional_embedding = nn.Parameter(torch.randn(spacial_dim ** 2 + 1, embed_dim) / embed_dim ** 0.5)
+        self.attention = Attention(embed_dim, num_heads, qkv_bias, qk_scale, attn_drop, proj_drop)
+        self.c_proj = nn.Linear(embed_dim, output_dim or embed_dim)
+
+    def forward(self, x):
+        x = x.flatten(start_dim=2).permute(2, 0, 1)  # NCHW -> (HW)NC
+        x = torch.cat([x.mean(dim=0, keepdim=True), x], dim=0)  # (HW+1)NC
+        x = x + self.positional_embedding[:, None, :].to(x.dtype)  # (HW+1)NC
+
+        # TODO: Need to check the transpose
+        x = self.attention(x.transpose(0, 1))  # Transpose to (N, HW+1, C) for Attention
+
+        x = self.c_proj(x[:, 0])  # Only use the pooled output (first token)
+        return x
+
+
+
 ####################################################################################
-# Transformer Components: Vit
+# Transformer Components: Transformer, Vit
 ####################################################################################
+
 
 class VisionTransformer(nn.Module):
     """ Vision Transformer with support for patch or hybrid CNN input stage, default settings for ImageNet.
