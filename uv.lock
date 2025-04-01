@@ -554,6 +554,18 @@ http = [
 ]
 
 [[package]]
+name = "ftfy"
+version = "6.3.1"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
+dependencies = [
+    { name = "wcwidth" },
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/a5/d3/8650919bc3c7c6e90ee3fa7fd618bf373cbbe55dff043bd67353dbb20cd8/ftfy-6.3.1.tar.gz", hash = "sha256:9b3c3d90f84fb267fe64d375a07b7f8912d817cf86009ae134aa03e1819506ec" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/ab/6e/81d47999aebc1b155f81eca4477a616a70f238a2549848c38983f3c22a82/ftfy-6.3.1-py3-none-any.whl", hash = "sha256:7c70eb532015cd2f9adb53f101fb6c7945988d023a085d127d1573dc49dd0083" },
+]
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
@@ -1112,6 +1124,7 @@ dependencies = [
     { name = "ipykernel" },
     { name = "kagglehub" },
     { name = "notebook" },
+    { name = "openai-clip" },
     { name = "pandas" },
     { name = "timm" },
     { name = "torch", version = "2.6.0", source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }, marker = "sys_platform == 'darwin'" },
@@ -1130,6 +1143,7 @@ requires-dist = [
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "kagglehub", specifier = ">=0.3.10" },
     { name = "notebook", specifier = ">=7.3.3" },
+    { name = "openai-clip", specifier = ">=1.0.1" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "timm", specifier = ">=1.0.15" },
     { name = "torch", marker = "sys_platform != 'darwin'", specifier = ">=2.6.0", index = "https://download.pytorch.org/whl/cu124" },
@@ -1406,6 +1420,17 @@ source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
 wheels = [
     { url = "https://mirrors.aliyun.com/pypi/packages/87/20/199b8713428322a2f22b722c62b8cc278cc53dffa9705d744484b5035ee9/nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:781e950d9b9f60d8241ccea575b32f5105a5baf4c2351cab5256a24869f12a1a" },
 ]
+
+[[package]]
+name = "openai-clip"
+version = "1.0.1"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
+dependencies = [
+    { name = "ftfy" },
+    { name = "regex" },
+    { name = "tqdm" },
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/3f/81/26d701ef9fface424b4ca808a5c5674df645ac46447720a540143d11c41e/openai-clip-1.0.1.tar.gz", hash = "sha256:cd40bf2f205c096c49524fcbff484339f793b52afd6e7ffad80a2fe108151721" }
 
 [[package]]
 name = "overrides"
