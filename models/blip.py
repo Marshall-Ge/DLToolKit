@@ -2,7 +2,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from models.attention import create_vit
-from models.utils import interpolate_pos_embed, load_checkpoint
+from models.utils import interpolate_pos_embed, load_checkpoint, tie_encoder_decoder_weights
 from models.bert import BertConfig, BertModel, BertLMHeadModel, init_tokenizer
 
 import torch
@@ -230,12 +230,41 @@ class BLIP_Pretrain(nn.Module):
         self.momentum = momentum
         self.temp = nn.Parameter(0.07 * torch.ones([]))
 
-        # create the decode
+        # create the decoder
         decoder_config = BertConfig.from_json_file(med_config)
         decoder_config.encoder_width = vision_width
         self.text_decoder = BertLMHeadModel.from_pretrained('bert-base-uncased', config=decoder_config)
         self.text_decoder.resize_token_embeddings(len(self.tokenizer))
+        tie_encoder_decoder_weights(self.text_encoder, self.text_decoder.bert, '', '/attention')
 
+    def forward(self, image, caption, alpha):
+        with torch.no_grad():
+            self.temp.clamp_(0.001, 0.5)
+
+        image_embeds = self.visual_encoder(image)
+        image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(image.device)
+        image_feat = F.normalize(self.vision_proj(image_embeds[:,0,:]), dim=-1) # (B, embed_dim)
+
+        text = self.tokenizer(caption, padding='max_length', truncation=True, return_tensors='pt').to(image.device)
+        text_output = self.text_encoder(text.input_ids, attention_mask = text.attention_mask, return_dict=True, mode = 'text')
+        text_feat = F.normalize(self.text_proj(text_output.last_hidden_state[:,0,:]), dim=-1)
+
+        # get momentum features
+        with torch.no_grad():
+            self._momentum_update()
+            image_embeds_m = self.visual_encoder_m(image)
+            image_feat_m = F.normalize(self.vision_proj_m(image_embeds_m[:,0,:]), dim=-1)
+            image_feat_all = torch.cat([image_feat_m.t(),self.image_queue.clone().detach()], dim=1)
+
+            # TODO: unfinished
+
+
+
+    @torch.no_grad()
+    def _momentum_update(self):
+        for model_pair in self.model_pairs:
+            for param, param_m in zip(model_pair[0].parameters(), model_pair[1].parameters()):
+                param_m.data = param_m.data * self.momentum + param.data * (1. - self.momentum)
 
 
     @torch.no_grad()
