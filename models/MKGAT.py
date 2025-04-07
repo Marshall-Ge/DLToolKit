@@ -23,7 +23,7 @@ class GraphAttentionLayer(nn.Module):
         self.alpha = alpha
         self.leakyrelu = nn.LeakyReLU(self.alpha)
 
-        self.skip_W = nn.Linear(emb_dim, 3 * emb_dim)
+        self.skip_W = nn.Linear(emb_dim, emb_dim)
 
     def forward(self, eh, er, et, h_id):
         """
@@ -53,7 +53,6 @@ class GraphAttentionLayer(nn.Module):
         # 使用 h_id 构建掩码
         mask = (h_id.unsqueeze(0) != h_id.unsqueeze(1)).unsqueeze(-1)
         e_ij = e_ij.masked_fill(mask, float('-inf'))
-        print(e_ij)
         # 计算注意力权重
         attn_weights = torch.softmax(e_ij, dim=1)  # [N, N, num_heads]
         attn_weights = self.attn_drop(attn_weights)
@@ -76,11 +75,12 @@ class MMKG_Embedding(nn.Module):
     # h: head node: item_entity
     # r: relation: set(has_image, has_text)
     # t: tail node: multimodal_entity
-    def __init__(self, num_items, emb_dim = 256 ,hidden_emb_dim = 64, clip_arch = "ViT-B/32"):
+    def __init__(self, num_items, num_relations = 3, emb_dim = 256 ,hidden_emb_dim = 64, clip_arch = "ViT-B/32"):
         super().__init__()
         self.num_items = num_items
+        self.emb_dim = emb_dim
         self.head_embedding = nn.Embedding(num_items, hidden_emb_dim)
-        self.relation_embedding = nn.Embedding(2, hidden_emb_dim)
+        self.relation_embedding = nn.Embedding(num_relations, hidden_emb_dim)
 
         # tailing_embedding
         clip_dim_dict = {'ViT-B/32': 512}
@@ -103,10 +103,14 @@ class MMKG_Embedding(nn.Module):
         er = self.relation_embedding(r_id)
         er = self.r_dense(er)
 
-        if r_id == 2: # image
-            e_t = self.image_dense(t)
-        else: # text
-            e_t = self.text_dense(t)
+        image_mask = (r_id == 2)
+        text_mask = (r_id != 2)
+        e_t_image = self.image_dense(t[image_mask])
+        e_t_text = self.text_dense(t[text_mask])
+        e_t = torch.zeros(t.shape[0], self.emb_dim, device=t.device)
+        e_t[image_mask] = e_t_image
+        e_t[text_mask] = e_t_text
 
         attn_out = self.gat(eh, er, e_t, item_id)
-        return attn_out, er, e_t
+        eh, er, et = torch.split(attn_out, self.emb_dim, dim=-1)
+        return eh, er, et
