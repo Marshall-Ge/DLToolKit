@@ -936,21 +936,6 @@ wheels = [
 ]
 
 [[package]]
-name = "kagglehub"
-version = "0.3.10"
-source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
-dependencies = [
-    { name = "packaging" },
-    { name = "pyyaml" },
-    { name = "requests" },
-    { name = "tqdm" },
-]
-sdist = { url = "https://mirrors.aliyun.com/pypi/packages/c0/b6/598259f1b5af7d0ad31f479080da4e8c533c189eb0cf072cb70ab8d75869/kagglehub-0.3.10.tar.gz", hash = "sha256:7df4238eea20817bce13bfacbe79ff4c0a583a9e876bfaf16d7ad6179611fb7c" }
-wheels = [
-    { url = "https://mirrors.aliyun.com/pypi/packages/41/f5/d1fb003b997cccda7e7567e9768ab1ad5f4be014875773299c67c62b3b96/kagglehub-0.3.10-py3-none-any.whl", hash = "sha256:82a204e77919da54021038971ed735450c91ea479c5c003d140a22503bc20981" },
-]
-
-[[package]]
 name = "markupsafe"
 version = "3.0.2"
 source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
@@ -1121,10 +1106,9 @@ dependencies = [
     { name = "datasets" },
     { name = "einops" },
     { name = "fairscale" },
-    { name = "ipykernel" },
-    { name = "kagglehub" },
     { name = "notebook" },
     { name = "openai-clip" },
+    { name = "opencv-python" },
     { name = "pandas" },
     { name = "timm" },
     { name = "torch", version = "2.6.0", source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }, marker = "sys_platform == 'darwin'" },
@@ -1133,6 +1117,7 @@ dependencies = [
     { name = "torchvision", version = "0.21.0", source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }, marker = "sys_platform == 'darwin'" },
     { name = "torchvision", version = "0.21.0+cu124", source = { registry = "https://download.pytorch.org/whl/cu124" }, marker = "sys_platform != 'darwin'" },
     { name = "transformers" },
+    { name = "yacs" },
 ]
 
 [package.metadata]
@@ -1140,10 +1125,9 @@ requires-dist = [
     { name = "datasets", specifier = ">=3.5.0" },
     { name = "einops", specifier = ">=0.8.1" },
     { name = "fairscale", specifier = ">=0.4.13" },
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "kagglehub", specifier = ">=0.3.10" },
     { name = "notebook", specifier = ">=7.3.3" },
     { name = "openai-clip", specifier = ">=1.0.1" },
+    { name = "opencv-python", specifier = ">=4.11.0.86" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "timm", specifier = ">=1.0.15" },
     { name = "torch", marker = "sys_platform != 'darwin'", specifier = ">=2.6.0", index = "https://download.pytorch.org/whl/cu124" },
@@ -1152,6 +1136,7 @@ requires-dist = [
     { name = "torchvision", marker = "sys_platform != 'darwin'", specifier = ">=0.21.0", index = "https://download.pytorch.org/whl/cu124" },
     { name = "torchvision", marker = "sys_platform == 'darwin'", specifier = ">=0.21.0" },
     { name = "transformers", specifier = ">=4.50.1" },
+    { name = "yacs", specifier = ">=0.1.8" },
 ]
 
 [[package]]
@@ -1431,6 +1416,23 @@ dependencies = [
     { name = "tqdm" },
 ]
 sdist = { url = "https://mirrors.aliyun.com/pypi/packages/3f/81/26d701ef9fface424b4ca808a5c5674df645ac46447720a540143d11c41e/openai-clip-1.0.1.tar.gz", hash = "sha256:cd40bf2f205c096c49524fcbff484339f793b52afd6e7ffad80a2fe108151721" }
+
+[[package]]
+name = "opencv-python"
+version = "4.11.0.86"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/17/06/68c27a523103dad5837dc5b87e71285280c4f098c60e4fe8a8db6486ab09/opencv-python-4.11.0.86.tar.gz", hash = "sha256:03d60ccae62304860d232272e4a4fda93c39d595780cb40b161b310244b736a4" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/05/4d/53b30a2a3ac1f75f65a59eb29cf2ee7207ce64867db47036ad61743d5a23/opencv_python-4.11.0.86-cp37-abi3-macosx_13_0_arm64.whl", hash = "sha256:432f67c223f1dc2824f5e73cdfcd9db0efc8710647d4e813012195dc9122a52a" },
+    { url = "https://mirrors.aliyun.com/pypi/packages/3b/84/0a67490741867eacdfa37bc18df96e08a9d579583b419010d7f3da8ff503/opencv_python-4.11.0.86-cp37-abi3-macosx_13_0_x86_64.whl", hash = "sha256:9d05ef13d23fe97f575153558653e2d6e87103995d54e6a35db3f282fe1f9c66" },
+    { url = "https://mirrors.aliyun.com/pypi/packages/f3/bd/29c126788da65c1fb2b5fb621b7fed0ed5f9122aa22a0868c5e2c15c6d23/opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1b92ae2c8852208817e6776ba1ea0d6b1e0a1b5431e971a2a0ddd2a8cc398202" },
+    { url = "https://mirrors.aliyun.com/pypi/packages/2c/8b/90eb44a40476fa0e71e05a0283947cfd74a5d36121a11d926ad6f3193cc4/opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6b02611523803495003bd87362db3e1d2a0454a6a63025dc6658a9830570aa0d" },
+    { url = "https://mirrors.aliyun.com/pypi/packages/fb/d7/1d5941a9dde095468b288d989ff6539dd69cd429dbf1b9e839013d21b6f0/opencv_python-4.11.0.86-cp37-abi3-win32.whl", hash = "sha256:810549cb2a4aedaa84ad9a1c92fbfdfc14090e2749cedf2c1589ad8359aa169b" },
+    { url = "https://mirrors.aliyun.com/pypi/packages/a4/7d/f1c30a92854540bf789e9cd5dde7ef49bbe63f855b85a2e6b3db8135c591/opencv_python-4.11.0.86-cp37-abi3-win_amd64.whl", hash = "sha256:085ad9b77c18853ea66283e98affefe2de8cc4c1f43eda4c100cf9b2721142ec" },
+]
 
 [[package]]
 name = "overrides"
@@ -2572,6 +2574,18 @@ wheels = [
     { url = "https://mirrors.aliyun.com/pypi/packages/1f/6d/c61e0668943a034abc3a569cdc5aeae37d686d9da7e39cf2ed621d533e36/xxhash-3.5.0-cp313-cp313-win32.whl", hash = "sha256:53a068fe70301ec30d868ece566ac90d873e3bb059cf83c32e76012c889b8637" },
     { url = "https://mirrors.aliyun.com/pypi/packages/96/14/8416dce965f35e3d24722cdf79361ae154fa23e2ab730e5323aa98d7919e/xxhash-3.5.0-cp313-cp313-win_amd64.whl", hash = "sha256:80babcc30e7a1a484eab952d76a4f4673ff601f54d5142c26826502740e70b43" },
     { url = "https://mirrors.aliyun.com/pypi/packages/27/ee/518b72faa2073f5aa8e3262408d284892cb79cf2754ba0c3a5870645ef73/xxhash-3.5.0-cp313-cp313-win_arm64.whl", hash = "sha256:4811336f1ce11cac89dcbd18f3a25c527c16311709a89313c3acaf771def2d4b" },
+]
+
+[[package]]
+name = "yacs"
+version = "0.1.8"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple/" }
+dependencies = [
+    { name = "pyyaml" },
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/44/3e/4a45cb0738da6565f134c01d82ba291c746551b5bc82e781ec876eb20909/yacs-0.1.8.tar.gz", hash = "sha256:efc4c732942b3103bea904ee89af98bcd27d01f0ac12d8d4d369f1e7a2914384" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/38/4f/fe9a4d472aa867878ce3bb7efb16654c5d63672b86dc0e6e953a67018433/yacs-0.1.8-py3-none-any.whl", hash = "sha256:99f893e30497a4b66842821bac316386f7bd5c4f47ad35c9073ef089aa33af32" },
 ]
 
 [[package]]

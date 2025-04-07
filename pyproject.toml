@@ -1,23 +1,23 @@
 [project]
 name = "mutlimodal-tool-box"
 version = "0.1.0"
-description = "Aims to record codes and notes of multimodal-learning"
+description = "A convenient toolbox for multimodal-learning"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "datasets>=3.5.0",
     "einops>=0.8.1",
     "fairscale>=0.4.13",
-    "ipykernel>=6.29.5",
-    "kagglehub>=0.3.10",
     "notebook>=7.3.3",
     "openai-clip>=1.0.1",
+    "opencv-python>=4.11.0.86",
     "pandas>=2.2.3",
     "timm>=1.0.15",
     "torch>=2.6.0",
     "torchaudio>=2.6.0",
     "torchvision>=0.21.0",
     "transformers>=4.50.1",
+    "yacs>=0.1.8",
 ]
 
 [[tool.uv.index]]
