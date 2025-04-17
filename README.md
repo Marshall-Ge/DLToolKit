@@ -11,6 +11,7 @@ In addition to model implementations, it offers a general way for training and e
 ### Models
 - [x] [BLIP](models/blip.py)
 - [ ] [CLIP]()
+- [ ] [LDC]()
 
 ### Components
 - [x] [Cross Attention](models/attention.py)
