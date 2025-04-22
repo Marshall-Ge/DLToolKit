@@ -28,7 +28,7 @@ def interpolate_pos_embed(pos_embed_checkpoint, visual_encoder):
         pos_tokens = torch.nn.functional.interpolate(pos_tokens, size=(new_size, new_size), mode='bicubic', align_corners=False)
         pos_tokens = pos_tokens.permute(0, 2, 3, 1).flatten(1, 2)
         new_pos_embed = torch.cat((extra_tokens, pos_tokens), dim=1)
-        print(f'reshape pos embedding from {orig_size ** 2:%d} to {new_size ** 2:%d}')
+        print(f'reshape pos embedding from {orig_size ** 2} to {new_size ** 2}')
         return new_pos_embed
 
     else:
