@@ -333,3 +333,41 @@ def create_vit(vit, image_size, use_grad_checkpointing=False, ckpt_layer=0, drop
                                            drop_path_rate=0.1 or drop_path_rate
                                            )
     return visual_encoder, vision_width
+
+
+if __name__ == '__main__':
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # Mock data
+    batch_size = 3
+    seq_len = 5
+    emb_dim = 64
+    vocab_size = 301
+    input_ids = torch.tensor([[100, 200, 300, 300, 0],
+                              [22, 33, 44, 0, 0],
+                              [66, 55, 66, 30, 0]], dtype=torch.long).to(device)
+    pad_mask = input_ids.eq(0)
+    emb_layer = nn.Embedding(vocab_size, emb_dim).to(device)
+    inputs = emb_layer(input_ids)
+
+    input_img = torch.randn((3, 3, 224, 224)).to(device)
+    pad_mask = pad_mask.unsqueeze(1).expand(batch_size, 224 * 224, seq_len)
+
+    def test_cross_attention():
+        cross_att = CrossAttention(emb_dim, in_channel=3, att_dropout=0.1).to(device)
+        outputs, att_weights = cross_att(input_img, inputs, pad_mask)
+        assert outputs.shape == (batch_size, 3, 224, 224)
+        assert att_weights.shape == (batch_size, 224 * 224, seq_len)
+    test_cross_attention()
+
+    def test_cross_multi_attention():
+        cross_multi_att = CrossMultiAttention(emb_dim, in_channel=3, num_heads=8, att_dropout=0.1).to(device)
+        outputs, att_weights = cross_multi_att(input_img, inputs, pad_mask)
+        assert outputs.shape == (batch_size, 3, 224, 224)
+        assert att_weights.shape == (batch_size, 8, 224 * 224, seq_len)
+    test_cross_multi_attention()
+
+    def test_vit():
+        vit = VisionTransformer(drop_rate=0.1, attn_drop_rate=0.1, drop_path_rate=0.1).to(device)
+        outputs = vit(input_img)
+        assert outputs.shape == (batch_size, 197 ,768)
+    test_vit()
