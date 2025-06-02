@@ -1,9 +1,9 @@
 [project]
-name = "mutlimodal-tool-box"
+name = "deeplearning-tool-box"
 version = "0.1.0"
-description = "A convenient toolbox for multimodal-learning"
+description = "A convenient toolbox for deep learning"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "datasets>=3.5.0",
     "einops>=0.8.1",
@@ -16,7 +16,7 @@ dependencies = [
     "torch>=2.6.0",
     "torchaudio>=2.6.0",
     "torchvision>=0.21.0",
-    "transformers==4.25.0",
+    "transformers",
     "yacs>=0.1.8",
 ]
 
