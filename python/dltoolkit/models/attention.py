@@ -1,6 +1,6 @@
 from functools import partial
 from timm.models.vision_transformer import _cfg, PatchEmbed
-from timm.models.layers import trunc_normal_, DropPath
+from timm.layers import trunc_normal_, DropPath
 from fairscale.nn.checkpoint.checkpoint_activations import checkpoint_wrapper
 from einops import rearrange
 from torch import nn

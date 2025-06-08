@@ -3,6 +3,7 @@
 __pycache__/
 data
 sandbox.py
-
 .venv
 pretrained_model
+*.egg-info/
+dist/
