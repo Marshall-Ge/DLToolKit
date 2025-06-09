@@ -1,4 +1,8 @@
 import torch
+import torch.nn as nn
+import datetime
+import math
+import numpy as np
 import dltoolkit.utils.multiprocessing as mpu
 import dltoolkit.utils.logging as logging
 import os
@@ -79,3 +83,47 @@ def gpu_mem_usage():
     else:
         mem_usage_bytes = 0
     return mem_usage_bytes / 1024**3
+
+def is_eval_epoch(cfg, cur_epoch, multigrid_schedule=None):
+    """
+    Determine if the model should be evaluated at the current epoch.
+    Args:
+        cfg (CfgNode): configs. Details can be found in
+            slowfast/config/defaults.py
+        cur_epoch (int): current epoch.
+        multigrid_schedule (List): schedule for multigrid training.
+    """
+    if cur_epoch + 1 == cfg.SOLVER.MAX_EPOCH:
+        return True
+    if multigrid_schedule is not None:
+        prev_epoch = 0
+        for s in multigrid_schedule:
+            if cur_epoch < s[-1]:
+                period = max(
+                    (s[-1] - prev_epoch) // cfg.MULTIGRID.EVAL_FREQ + 1, 1
+                )
+                return (s[-1] - 1 - cur_epoch) % period == 0
+            prev_epoch = s[-1]
+
+    return (cur_epoch + 1) % cfg.TRAIN.EVAL_PERIOD == 0
+
+
+
+def frozen_bn_stats(model):
+    """
+    Set all the bn layers to eval mode.
+    Args:
+        model (model): model to set bn layers to eval mode.
+    """
+    for m in model.modules():
+        if isinstance(m, nn.BatchNorm3d):
+            m.eval()
+
+def check_nan_losses(loss):
+    """
+    Determine whether the loss is NaN (not a number).
+    Args:
+        loss (loss): loss to check whether is NaN.
+    """
+    if math.isnan(loss):
+        raise RuntimeError("ERROR: Got NaN losses {}".format(datetime.now()))

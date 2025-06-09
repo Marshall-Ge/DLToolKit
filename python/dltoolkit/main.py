@@ -1,9 +1,9 @@
 import yaml
 import subprocess
-from configs.defaults import assert_and_infer_cfg
-from utils.parse import parse_args, load_config
-import tools
-from utils.misc import launch_job
+from dltoolkit.configs.defaults import assert_and_infer_cfg
+from dltoolkit.utils.parse import parse_args, load_config
+import dltoolkit.tools as tools
+from dltoolkit.utils.misc import launch_job
 
 
 def main():
