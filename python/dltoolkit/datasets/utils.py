@@ -2,19 +2,10 @@
 
 import logging
 import numpy as np
-import os
 import random
-import time
-from collections import defaultdict
-import cv2
 import torch
 from torch.utils.data.distributed import DistributedSampler
 
-from torchvision import transforms
-
-from dltoolkit.utils.env import pathmgr
-
-from . import transform as transform
 
 
 logger = logging.getLogger(__name__)

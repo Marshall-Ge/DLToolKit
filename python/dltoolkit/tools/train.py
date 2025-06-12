@@ -6,7 +6,7 @@ import math
 from fvcore.nn.precise_bn import get_bn_modules, update_bn_stats
 
 
-import dltoolkit.utils.losses as losses
+import dltoolkit.models.losses as losses
 import dltoolkit.utils.metrics as metrics
 from dltoolkit.models.build import build_model
 import dltoolkit.utils.distributed as du

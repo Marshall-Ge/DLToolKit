@@ -9,8 +9,8 @@ import os
 import sys
 import simplejson
 
-import distributed as du
-from env import pathmgr
+import dltoolkit.utils.distributed as du
+from dltoolkit.utils.env import pathmgr
 
 
 def _suppress_print():

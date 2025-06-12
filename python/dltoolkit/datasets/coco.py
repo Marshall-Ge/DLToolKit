@@ -23,10 +23,7 @@ class COCOCaptionDataset(Dataset):
         ], "Split '{}' not supported for ImageNet".format(mode)
         logger.info("Constructing ImageNet {}...".format(mode))
 
-
-        # 加载标注数据
-        with open(annotation_file, 'r') as f:
-            self.annotations = json.load(f)
+        self._load_annotations()
 
         # 创建图像ID到文件名的映射
         self.id_to_filename = {img['id']: img['file_name'] for img in self.annotations['images']}
@@ -47,14 +44,15 @@ class COCOCaptionDataset(Dataset):
             for cap_idx in range(num_captions):
                 self.index_pairs.append((img_id, cap_idx))
     def _load_annotations(self):
-        # TODO: Implement loading annotations from the specified file
         if self.mode == 'train':
-            annotations_file = os.path.join(
-                self.data_path, 'annotations', 'captions_train2017.json'
-            )
-        split_path = os.path.join(
-            self.data_path, f"{self.cfg.DATA}.json"
-        )
+            annotations_file = os.path.join(self.data_path, self.cfg.TRAIN_FILE)
+        elif self.mode == 'val':
+            annotations_file = os.path.join(self.data_path, self.cfg.VAL_FILE)
+        else:
+            annotations_file = os.path.join(self.data_path, self.cfg.TEST_FILE)
+
+        with open(annotations_file, 'r') as f:
+            self.annotations = json.load(f)
 
     def __len__(self):
         return len(self.index_pairs)

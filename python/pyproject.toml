@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "dltoolkit"
 version = "0.1.0"
@@ -19,6 +23,9 @@ dependencies = [
     "fvcore"
 ]
 
+[tools.setuptools.packages.find]
+include = ["dltoolkit", "dltoolkit.*"]
+
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple/"
 
@@ -35,6 +42,3 @@ name = "pytorch-cu124"
 url = "https://download.pytorch.org/whl/cu124"
 explicit = true
 
-[build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
