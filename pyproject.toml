@@ -1,6 +1,9 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["dltoolkit", "dltoolkit.*"]
 
 [project]
 name = "dltoolkit"
@@ -23,8 +26,6 @@ dependencies = [
     "fvcore"
 ]
 
-[tools.setuptools.packages.find]
-include = ["dltoolkit", "dltoolkit.*"]
 
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple/"

@@ -57,9 +57,9 @@ def train(cfg):
         params = misc.log_model_info(model, cfg, use_train_input=True)
     
     # Construct the optimizer.
-    optimizer = optim.construct_optimizer(cfg, model)
+    optimizer = optim.construct_optimizer(model, cfg)
 
-    # Load a checkpoint to resume training if applicable. use !!!
+    # Load a checkpoint to resume training if applicable.
     if cfg.TRAIN.AUTO_RESUME and cu.has_checkpoint(cfg.OUTPUT_DIR):
         logger.info("Load from last checkpoint.")
         last_checkpoint = cu.get_last_checkpoint(cfg.OUTPUT_DIR, task=cfg.TASK)

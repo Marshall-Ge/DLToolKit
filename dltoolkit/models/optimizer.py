@@ -23,161 +23,11 @@ def construct_optimizer(model, cfg):
         cfg (config): configs of hyper-parameters of SGD or ADAM, includes base
         learning rate,  momentum, weight_decay, dampening, and etc.
     """
-    
+
     if cfg.SOLVER.LAYER_DECAY > 0.0 and cfg.SOLVER.LAYER_DECAY < 1.0:
         optim_params = get_param_groups(model, cfg)
 
-    elif cfg.SOLVER.LAYER_DECAY == 1.0 and (cfg.MODEL.FINETUNE_FACTOR != 1.0 or cfg.MODEL.ADAPT_FINETUNE_FACTOR != 1.0 or cfg.MODEL.DEFAULT_FINETUNE_FACTOR != 1.0 or cfg.MODEL.MLP_FINETUNE_FACTOR != 1.0 or cfg.MODEL.EXPERT_FINETUNE_FACTOR != 1.0):
-        # adjust some parameters learning rate
-        model_without_ddp = model
-        if cfg.NUM_GPUS > 1:
-            model_without_ddp = model.module
-         
-        skip = {}
-        if cfg.NUM_GPUS > 1:
-            if hasattr(model.module, "no_weight_decay"):
-                skip = model.module.no_weight_decay()
-        else:
-            if hasattr(model, "no_weight_decay"):
-                skip = model.no_weight_decay()
-  
-        # Separate to different parameter groups.
-        default_param_groups = [
-            {  # bn parameters
-                "params": [],
-                "lr": cfg.SOLVER.BASE_LR * cfg.MODEL.DEFAULT_FINETUNE_FACTOR,
-                "weight_decay": cfg.BN.WEIGHT_DECAY,
-                "lr_factor": cfg.MODEL.DEFAULT_FINETUNE_FACTOR,
-                "key": "default",
-                "layer_decay": 1.0,
-                "apply_LARS": False,
-            },
-            {  # non_bn parameters
-                "params": [],
-                "lr": cfg.SOLVER.BASE_LR * cfg.MODEL.DEFAULT_FINETUNE_FACTOR,
-                "weight_decay": cfg.SOLVER.WEIGHT_DECAY,
-                "lr_factor": cfg.MODEL.DEFAULT_FINETUNE_FACTOR,
-                "key": "default",
-                "layer_decay": 1.0,
-                "apply_LARS": cfg.SOLVER.LARS_ON,
-            },
-            {  # no weight_decay parameters
-                "params": [],
-                "lr": cfg.SOLVER.BASE_LR * cfg.MODEL.DEFAULT_FINETUNE_FACTOR,
-                "weight_decay": 0.0,
-                "lr_factor": cfg.MODEL.DEFAULT_FINETUNE_FACTOR,
-                "key": "default",
-                "layer_decay": 1.0,
-                "apply_LARS": cfg.SOLVER.LARS_ON,
-            },
-        ]
-        param_groups, keys = [], [] 
-        if hasattr(model_without_ddp, "lr_factor"):
-            for key, val in model_without_ddp.lr_factor.items():
-                keys.append(key)
-                param_groups += [
-                    {  # bn parameters
-                        "params": [],
-                        "lr": cfg.SOLVER.BASE_LR * val,
-                        "weight_decay": cfg.BN.WEIGHT_DECAY,
-                        "lr_factor": val,
-                        "key": key,
-                        "layer_decay": 1.0,
-                        "apply_LARS": False,
-                    },
-                    {  # non_bn parameters
-                        "params": [],
-                        "lr": cfg.SOLVER.BASE_LR * val,
-                        "weight_decay": cfg.SOLVER.WEIGHT_DECAY,
-                        "lr_factor": val,
-                        "key": key,
-                        "layer_decay": 1.0,
-                        "apply_LARS": cfg.SOLVER.LARS_ON,
-                    },
-                    {  # no weight_decay parameters
-                        "params": [],
-                        "lr": cfg.SOLVER.BASE_LR * val,
-                        "weight_decay": 0.0,
-                        "lr_factor": val,
-                        "key": key,
-                        "layer_decay": 1.0,
-                        "apply_LARS": cfg.SOLVER.LARS_ON,
-                     },
-                ]
-        
-        # Add parameters to different param_groups.
-        for m_name, m in model_without_ddp.named_modules():
-            is_bn = isinstance(m, torch.nn.modules.batchnorm._NormBase)
-            for p_name, p in m.named_parameters(recurse=False):
-                name = "{}.{}".format(m_name, p_name).strip(".")
-
-                # Handle corner cases for parameters created without using nn.Module.
-                if m_name == "":
-                    m_name = p_name
-
-                use_default = True
-                for i, key in enumerate(keys):
-                    if p.requires_grad and key in m_name:
-                        # no weight_decay parameters
-                        # if p_name == "bias":
-                        if any(k in name for k in skip):
-                            if param_groups[3 * i + 2]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                param_groups[3 * i + 2]["params"].append(p)
-
-                        elif cfg.SOLVER.ZERO_WD_1D_PARAM and (
-                            len(p.shape) == 1 or name.endswith(".bias")
-                        ):
-                            if param_groups[3 * i + 2]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                param_groups[3 * i + 2]["params"].append(p)
-                        elif is_bn:
-                            # bn parameters
-                            if param_groups[3 * i]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                param_groups[3 * i]["params"].append(p)
-                        else:
-                            # non_bn parameters
-                            if param_groups[3 * i + 1]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                param_groups[3 * i + 1]["params"].append(p)
-                        use_default = False
-                
-                if use_default:
-                    if p.requires_grad:
-                        # no weight_decay parameters
-                        if any(k in name for k in skip):
-                            if default_param_groups[2]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                default_param_groups[2]["params"].append(p)
-                        elif cfg.SOLVER.ZERO_WD_1D_PARAM and (
-                            len(p.shape) == 1 or name.endswith(".bias")
-                        ):
-                            if default_param_groups[2]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                default_param_groups[2]["params"].append(p)
-                        elif is_bn:
-                            # bn parameters
-                            if default_param_groups[0]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                default_param_groups[0]["params"].append(p)
-                        else:
-                            # non_bn parameters
-                            if default_param_groups[1]["lr_factor"] == 0.:
-                                p.requires_grad = False
-                            else:
-                                default_param_groups[1]["params"].append(p)
-        optim_params = default_param_groups + param_groups
-        optim_params = [x for x in optim_params if len(x["params"])]
-    
-    elif cfg.SOLVER.LAYER_DECAY == 1.0 and cfg.MODEL.FINETUNE_FACTOR == 1.0:
+    elif cfg.SOLVER.LAYER_DECAY == 1.0:
         bn_parameters = []
         non_bn_parameters = []
         zero_parameters = []
@@ -202,12 +52,12 @@ def construct_optimizer(model, cfg):
                 elif any(k in name for k in skip):
                     zero_parameters.append(p)
                 elif cfg.SOLVER.ZERO_WD_1D_PARAM and (
-                    len(p.shape) == 1 or name.endswith(".bias")
+                        len(p.shape) == 1 or name.endswith(".bias")
                 ):
                     zero_parameters.append(p)
                 else:
                     non_bn_parameters.append(p)
-        
+
         optim_params = [
             {
                 "params": bn_parameters,
@@ -256,7 +106,7 @@ def construct_optimizer(model, cfg):
                 cfg.SOLVER.LAYER_DECAY
             )
         )
-    
+
     if cfg.SOLVER.OPTIMIZING_METHOD == "sgd":
         optimizer = torch.optim.SGD(
             optim_params,
@@ -341,10 +191,10 @@ def get_param_groups(model, cfg):
             group_name = "no_grad"
             no_grad_parameters_count += 1
             continue
-        name = name[len("module.") :] if name.startswith("module.") else name
+        name = name[len("module."):] if name.startswith("module.") else name
         if name in skip or (
-            (len(p.shape) == 1 or name.endswith(".bias"))
-            and cfg.SOLVER.ZERO_WD_1D_PARAM
+                (len(p.shape) == 1 or name.endswith(".bias"))
+                and cfg.SOLVER.ZERO_WD_1D_PARAM
         ):
             layer_id, layer_decay = _get_layer_decay(name)
             group_name = "layer_%d_%s" % (layer_id, "zero")
@@ -375,10 +225,10 @@ def get_param_groups(model, cfg):
 
     # Check all parameters will be passed into optimizer.
     assert (
-        len(list(model.parameters()))
-        == non_bn_parameters_count
-        + zero_parameters_count
-        + no_grad_parameters_count
+            len(list(model.parameters()))
+            == non_bn_parameters_count
+            + zero_parameters_count
+            + no_grad_parameters_count
     ), "parameter size does not match: {} + {} + {} != {}".format(
         non_bn_parameters_count,
         zero_parameters_count,
@@ -417,7 +267,7 @@ def set_lr(optimizer, new_lr):
     for param_group in optimizer.param_groups:
         lr_factor = param_group.get("lr_factor", 1.0)
         layer_decay = param_group.get("layer_decay", 1.0)
-        param_group["lr"] = new_lr * lr_factor * layer_decay 
+        param_group["lr"] = new_lr * lr_factor * layer_decay
 
 
 class LARS(object):
@@ -433,12 +283,12 @@ class LARS(object):
     """
 
     def __init__(
-        self,
-        optimizer,
-        trust_coefficient=0.02,
-        clip=True,
-        eps=1e-8,
-        ignore_1d_param=True,
+            self,
+            optimizer,
+            trust_coefficient=0.02,
+            clip=True,
+            eps=1e-8,
+            ignore_1d_param=True,
     ):
         self.optim = optimizer
         self.trust_coefficient = trust_coefficient
@@ -505,9 +355,9 @@ class LARS(object):
                     if param_norm != 0 and grad_norm != 0:
                         # calculate adaptive lr + weight decay
                         adaptive_lr = (
-                            self.trust_coefficient
-                            * (param_norm)
-                            / (grad_norm + param_norm * weight_decay + self.eps)
+                                self.trust_coefficient
+                                * (param_norm)
+                                / (grad_norm + param_norm * weight_decay + self.eps)
                         )
 
                         # clip learning rate for LARS

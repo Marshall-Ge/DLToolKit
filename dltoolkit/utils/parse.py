@@ -1,6 +1,6 @@
 import argparse
 import sys
-from config.defaults import get_cfg
+from dltoolkit.configs.defaults import get_cfg
 
 
 def parse_args():
@@ -34,6 +34,13 @@ def parse_args():
         default=None,
         nargs=argparse.REMAINDER,
     )
+    parser.add_argument(
+        "--init_method",
+        help="Initialization method, includes TCP or shared file-system",
+        default="tcp://localhost:9997",
+        type=str,
+    )
+
     if len(sys.argv) == 1:
         parser.print_help()
     return parser.parse_args()

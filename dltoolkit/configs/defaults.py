@@ -72,15 +72,14 @@ _C.TEST.SAVE_RESULTS_PATH = ""
 # -----------------------------------------------------------------------------
 _C.DATA = CfgNode()
 
+# DataType
+_C.DATA.DATA_TYPE = "image" # image / video
+
 # The path to the data directory.
 _C.DATA.PATH_TO_DATA_DIR = ""
 
-# The separator used between path and label.
-_C.DATA.PATH_LABEL_SEPARATOR = " "
-
-# Video path prefix if any.
-# TODO: support two types of data path
-_C.DATA.PATH_PREFIX = ""
+# The path to the metadata directory.
+_C.DATA.PATH_TO_METADATA_DIR = ""
 
 # The number of frames of the input clip.
 _C.DATA.NUM_FRAMES = 8
@@ -120,16 +119,26 @@ _C.SOLVER.WARMUP_EPOCHS = 0.0
 # The start learning rate of the warm up.
 _C.SOLVER.WARMUP_START_LR = 0.01
 
+# The layer-wise decay of learning rate. Set to 1. to disable.
+_C.SOLVER.LAYER_DECAY = 1.0
+
+# If True, perform no weight decay on parameter with one dimension (bias term, etc).
+_C.SOLVER.ZERO_WD_1D_PARAM = False
+
 # Optimization method.
 _C.SOLVER.OPTIMIZING_METHOD = "sgd"
 
 # Adam's beta
 _C.SOLVER.BETAS = (0.9, 0.999)
+
+# LARS optimizer
+_C.SOLVER.LARS_ON = False
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
 
-# The name of the current task; e.g. "ssl"/"sl" for (self)supervised learning
+# The name of the current task (training or inference).;
+# "itm" for image-text matching learning
 _C.TASK = ""
 
 # Number of GPUs to use (applies to both training and testing).
@@ -137,6 +146,10 @@ _C.NUM_GPUS = 1
 
 # Number of machine to use for the job.
 _C.NUM_SHARDS = 1
+
+# Note that non-determinism may still be present due to non-deterministic
+# operator implementations in GPU operator libraries.
+_C.RNG_SEED = 1
 
 # The index of the current machine.
 _C.SHARD_ID = 0
@@ -197,11 +210,8 @@ _C.MODEL.LOSS_FUNC = "cross_entropy"
 _C.MODEL.MODEL_NAME = "SlowFast"
 
 # Model architectures that has one single pathway.
-_C.MODEL.ARCH = [
-    "vitb32", 
-    "vitb16",
-    "vitl14",
-]
+# vitb16 / vitb32 / vitl14
+_C.MODEL.ARCH = "vitb16"
 
 # Dropout rate before final projection in the backbone.
 _C.MODEL.DROPOUT_RATE = 0.5
@@ -231,6 +241,47 @@ _C.MODEL.FP16_ALLREDUCE = False
 # If True, use static graph for the model.
 # This is useful for models that have a fixed structure and do not change
 _C.MODEL.STATIC_GRAPH = False
+
+
+# ---------------------------------------------------------------------------- #
+# Batch norm options
+# ---------------------------------------------------------------------------- #
+_C.BN = CfgNode()
+
+# Precise BN stats.
+_C.BN.USE_PRECISE_STATS = False
+
+# Number of samples use to compute precise bn.
+_C.BN.NUM_BATCHES_PRECISE = 200
+
+# Weight decay value that applies on BN.
+_C.BN.WEIGHT_DECAY = 0.0
+
+# Norm type, options include `batchnorm`, `sub_batchnorm`, `sync_batchnorm`
+_C.BN.NORM_TYPE = "batchnorm"
+
+# Parameter for SubBatchNorm, where it splits the batch dimension into
+# NUM_SPLITS splits, and run BN on each of them separately independently.
+_C.BN.NUM_SPLITS = 1
+
+# Parameter for NaiveSyncBatchNorm, where the stats across `NUM_SYNC_DEVICES`
+# devices will be synchronized. `NUM_SYNC_DEVICES` cannot be larger than number of
+# devices per machine; if global sync is desired, set `GLOBAL_SYNC`.
+# By default ONLY applies to NaiveSyncBatchNorm3d; consider also setting
+# CONTRASTIVE.BN_SYNC_MLP if appropriate.
+_C.BN.NUM_SYNC_DEVICES = 1
+
+# Parameter for NaiveSyncBatchNorm. Setting `GLOBAL_SYNC` to True synchronizes
+# stats across all devices, across all machines; in this case, `NUM_SYNC_DEVICES`
+# must be set to None.
+# By default ONLY applies to NaiveSyncBatchNorm3d; consider also setting
+# CONTRASTIVE.BN_SYNC_MLP if appropriate.
+_C.BN.GLOBAL_SYNC = False
+
+# ---------------------------------------------------------------------------- #
+# custom configs
+# ---------------------------------------------------------------------------- #
+_C.TRAIN.CLIP_ORI_PATH = None
 
 
 def assert_and_infer_cfg(cfg):

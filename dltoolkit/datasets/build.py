@@ -24,8 +24,4 @@ def build_dataset(dataset_name, cfg, split):
     Returns:
         Dataset: a constructed dataset specified by dataset_name.
     """
-    # Capitalize the the first letter of the dataset_name since the dataset_name
-    # in configs may be in lowercase but the name of dataset class should always
-    # start with an uppercase letter.
-    name = dataset_name.capitalize()
-    return DATASET_REGISTRY.get(name)(cfg, split)
+    return DATASET_REGISTRY.get(dataset_name)(cfg, split)

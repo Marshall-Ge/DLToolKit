@@ -12,7 +12,7 @@ import json
 
 
 @MODEL_REGISTRY.register()
-class ClipImage(nn.Module):
+class BasicClipImage(nn.Module):
 
     def __init__(self, cfg):
         """
@@ -21,19 +21,20 @@ class ClipImage(nn.Module):
         Args:
             nothing.
         """
-        super(ClipImage, self).__init__()
+        super(BasicClipImage, self).__init__()
         self.cfg = cfg
         self._construct_network(cfg)
 
-        # text encoder
-        self.model.eval()
-        self.text_dict = self.text_prompt(cfg.DATA.INDEX_LABEL_MAPPING_FILE)
-        self.prompt_type_num = len(self.text_dict)
-        self.cls_num = self.text_dict[0].shape[0]
-        self.dynamic_classifier = self.achieve_csf_matrix(self.text_dict, self.model)
-        self.test_scale = 1.
+        # CLS
+        if cfg.TASK == 'cls':
+            self.model.eval()
+            self.text_dict = self.text_prompt(cfg.DATA.INDEX_LABEL_MAPPING_FILE)
+            self.prompt_type_num = len(self.text_dict)
+            self.cls_num = self.text_dict[0].shape[0]
+            self.dynamic_classifier = self.achieve_csf_matrix(self.text_dict, self.model)
+            self.test_scale = 1.
+            # self.linear = torch.nn.Linear(512, 1000)
 
-        # self.linear = torch.nn.Linear(512, 1000)
 
     def _construct_network(self, cfg):
         if cfg.MODEL.ARCH == 'vitb32':
@@ -48,7 +49,30 @@ class ClipImage(nn.Module):
     def update_state(self):
         self.dynamic_classifier = self.achieve_csf_matrix(self.text_dict, self.model)
 
-    def forward(self, x=None, update=False):
+    def forward(self, img = None, text=None):
+        if self.cfg.TASK == 'cls':
+            self.cls_forward(img)
+        elif self.cfg.TASK == 'itm':
+            self.itm_forward(img, text)
+        else:
+            raise NotImplementedError
+
+    def itm_forward(self, img=None, text=None):
+
+        img = img[0]
+        text = text[0]
+        # shape of x(input) is (bz, channel, h, w)
+        bz, channel_dim, h, w = img.shape
+        img_encode = self.model.encode_image(img)
+        img_encode = img_encode / img_encode.norm(dim=-1, keepdim=True)
+
+        text_encode = self.model.encode_text(text)
+        text_encode = text_encode / text_encode.norm(dim=-1, keepdim=True)
+
+        logits = self.model.logit_scale.exp() * (img_encode @ text_encode.T)
+        return logits
+
+    def cls_forward(self, x=None):
 
         x = x[0]
         # shape of x(input) is (bz, channel, h, w)
@@ -183,5 +207,3 @@ class ClipImage(nn.Module):
 
 if __name__ == '__main__':
     pass
-
-
