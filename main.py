@@ -8,6 +8,7 @@ def main():
     """
     Main function to spawn the train and test process.
     """
+    # noinspection PyInterpreter
     args = parse_args()
     train = tools.train
     test = tools.test

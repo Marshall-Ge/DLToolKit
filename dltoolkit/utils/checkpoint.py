@@ -209,8 +209,6 @@ def load_checkpoint(
         optimizer (optim): optimizer to load the historical state.
         scaler (GradScaler): GradScaler to load the mixed precision scale.
         inflation (bool): if True, inflate the weights from the checkpoint.
-        convert_from_caffe2 (bool): if True, load the model from caffe2 and
-            convert it to pytorch.
         epoch_reset (bool): if True, reset #train iterations from the checkpoint.
         clear_name_pattern (string): if given, this (sub)string will be cleared
             from a layer name if it can be matched.

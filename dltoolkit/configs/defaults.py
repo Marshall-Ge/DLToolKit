@@ -78,6 +78,9 @@ _C.DATA.DATA_TYPE = "image" # image / video
 # The path to the data directory.
 _C.DATA.PATH_TO_DATA_DIR = ""
 
+# If True, calculdate the map as metric.
+_C.DATA.MULTI_LABEL = False
+
 # The path to the metadata directory.
 _C.DATA.PATH_TO_METADATA_DIR = ""
 
@@ -86,6 +89,33 @@ _C.DATA.NUM_FRAMES = 8
 
 # Input frame channel dimensions.
 _C.DATA.INPUT_CHANNEL_NUM = 3
+
+# Negative sampling rate. used in 'itm' task.
+_C.DATA.NEGATIVE_SAMPLING_RATE = 0.5
+
+# The spatial crop size for training.
+_C.DATA.TRAIN_CROP_SIZE = 224
+
+# The spatial crop size for testing.
+_C.DATA.TEST_CROP_SIZE = 256
+
+# The std value of the visual raw pixels across the R G B channels.
+_C.DATA.STD = [0.225, 0.225, 0.225]
+
+# The mean value of the visual raw pixels across the R G B channels.
+_C.DATA.MEAN = [0.45, 0.45, 0.45]
+
+_C.DATA.USE_PCA = False
+
+# Eigenvalues for PCA jittering. Note PCA is RGB based.
+_C.DATA.TRAIN_PCA_EIGVAL = [0.225, 0.224, 0.229]
+
+# Eigenvectors for PCA jittering.
+_C.DATA.TRAIN_PCA_EIGVEC = [
+    [-0.5675, 0.7192, 0.4009],
+    [-0.5808, -0.0045, -0.8140],
+    [-0.5836, -0.6948, 0.4203],
+]
 
 # ---------------------------------------------------------------------------- #
 # Optimizer options
@@ -100,6 +130,13 @@ _C.SOLVER.LR_POLICY = "cosine"
 
 # Final learning rates for 'cosine' policy.
 _C.SOLVER.COSINE_END_LR = 0.0
+
+
+# Steps for 'steps_' policies (in epochs).
+_C.SOLVER.STEPS = []
+
+# If True, start from the peak cosine learning rate after warm up.
+_C.SOLVER.COSINE_AFTER_WARMUP = False
 
 # Exponential decay factor.
 _C.SOLVER.GAMMA = 0.1
@@ -282,7 +319,7 @@ _C.BN.GLOBAL_SYNC = False
 # custom configs
 # ---------------------------------------------------------------------------- #
 _C.TRAIN.CLIP_ORI_PATH = None
-
+_C.SOLVER.COSINE_RESTART_EPOCH = 0
 
 def assert_and_infer_cfg(cfg):
 

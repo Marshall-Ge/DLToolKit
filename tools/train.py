@@ -1,4 +1,3 @@
-
 import numpy as np
 import torch
 import pprint
@@ -94,7 +93,6 @@ def train(cfg):
             optimizer,
             scaler= None,
             inflation=cfg.TRAIN.CHECKPOINT_INFLATE,
-            convert_from_caffe2=cfg.TRAIN.CHECKPOINT_TYPE == "caffe2",
             epoch_reset=cfg.TRAIN.CHECKPOINT_EPOCH_RESET,
             clear_name_pattern=cfg.TRAIN.CHECKPOINT_CLEAR_NAME_PATTERN,
             image_init=cfg.TRAIN.CHECKPOINT_IN_INIT,
@@ -156,15 +154,7 @@ def train(cfg):
             )
         )
 
-        # Compute precise BN stats.
-        if len(get_bn_modules(model)) and cfg.BN.USE_PRECISE_STATS:
-            calculate_and_update_precise_bn(
-                    precise_bn_loader,
-                    model,
-                    min(cfg.BN.NUM_BATCHES_PRECISE, len(precise_bn_loader)),
-                    cfg.NUM_GPUS > 0,
-                )
-        _ = misc.aggregate_sub_bn_stats(model)
+        # TODO: Compute precise BN stats.
 
         # Save a checkpoint.
         if is_checkp_epoch:
@@ -256,16 +246,12 @@ def train_epoch(
         if cfg.NUM_GPUS:
             if isinstance(inputs, (list,)):
                 for i in range(len(inputs)):
-                    if isinstance(inputs[i], (list,)):
-                        for j in range(len(inputs[i])):
-                            inputs[i][j] = inputs[i][j].cuda(non_blocking=True)
-                    else:
+                    if isinstance(inputs[i], torch.Tensor):
                         inputs[i] = inputs[i].cuda(non_blocking=True)
             else:
                 inputs = inputs.cuda(non_blocking=True)
             if not isinstance(labels, list):
                 labels = labels.cuda(non_blocking=True)
-                index = index.cuda(non_blocking=True)
         
         batch_size = (
             inputs[0][0].size(0)
@@ -282,6 +268,7 @@ def train_epoch(
         optimizer.zero_grad()
 
         preds = model(inputs)
+
         if isinstance(preds, list):
             preds = preds[0]
         # Compute the loss.

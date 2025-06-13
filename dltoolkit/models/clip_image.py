@@ -49,27 +49,29 @@ class BasicClipImage(nn.Module):
     def update_state(self):
         self.dynamic_classifier = self.achieve_csf_matrix(self.text_dict, self.model)
 
-    def forward(self, img = None, text=None):
+    def forward(self, x):
         if self.cfg.TASK == 'cls':
-            self.cls_forward(img)
+            res = self.cls_forward(x)
         elif self.cfg.TASK == 'itm':
-            self.itm_forward(img, text)
+            img = x[0]
+            text = x[1]
+            res = self.itm_forward(img, text)
         else:
             raise NotImplementedError
+        return res
 
     def itm_forward(self, img=None, text=None):
-
-        img = img[0]
-        text = text[0]
         # shape of x(input) is (bz, channel, h, w)
         bz, channel_dim, h, w = img.shape
         img_encode = self.model.encode_image(img)
         img_encode = img_encode / img_encode.norm(dim=-1, keepdim=True)
-
+        text = torch.cat([clip.tokenize(tx) for tx in text]).to(img.device)
         text_encode = self.model.encode_text(text)
         text_encode = text_encode / text_encode.norm(dim=-1, keepdim=True)
 
-        logits = self.model.logit_scale.exp() * (img_encode @ text_encode.T)
+        logits = self.model.logit_scale.exp() * torch.sum(img_encode * text_encode, dim=1)
+        # for image-text matching, we should modify the logits to 0 - 1
+        logits = logits / (logits.norm(dim=-1, keepdim=True) + 1e-8)
         return logits
 
     def cls_forward(self, x=None):

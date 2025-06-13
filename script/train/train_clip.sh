@@ -26,5 +26,5 @@ TORCH_DISTRIBUTED_DEBUG=INFO python -W ignore -u main.py \
   SOLVER.COSINE_END_LR 3.33e-8 \
   TRAIN.EVAL_PERIOD 22 \
   TRAIN.CHECKPOINT_PERIOD 1 \
-  MODEL.LOSS_FUNC soft_cross_entropy \
+  MODEL.LOSS_FUNC mse \
   TRAIN.CLIP_ORI_PATH /root/.cache/clip/ViT-B-16.pt \
