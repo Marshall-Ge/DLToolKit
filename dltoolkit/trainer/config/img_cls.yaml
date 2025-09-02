@@ -1,0 +1,13 @@
+# specify the default per-component configs
+defaults:
+
+  # <folder_name>@<field_name>.<field_name>: <yaml_file_name>
+  # data: trainer/config/data/img_cls.yaml
+  - data@data : img_cls
+
+  # strategy: trainer/config/strategy/accelerate.yaml
+  - distributed@strategy : accelerate
+
+model:
+    # model name registered or huggingface model path
+    name_or_path: DummyModel

@@ -1,0 +1,5 @@
+data:
+  image_key: image
+  label_key: label
+model:
+  name_or_path: DummyModel

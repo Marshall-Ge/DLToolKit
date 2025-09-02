@@ -1,0 +1,7 @@
+data:
+  image_key: image
+  label_key: label
+strategy:
+  use_cpu: true
+model:
+  name_or_path: DummyModel

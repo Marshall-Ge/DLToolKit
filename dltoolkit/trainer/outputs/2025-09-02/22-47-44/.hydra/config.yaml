@@ -1,0 +1,6 @@
+data:
+  image_key: image
+  label_key: label
+strategy: {}
+model:
+  name_or_path: DummyModel

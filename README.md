@@ -6,13 +6,8 @@ Whether you're a seasoned researcher or a budding data scientist, it empowers yo
 
 ## Environment Setup
 
-Prepare dependencies and environment.
-```bash
-# Using conda
-conda create -n my_env python=3.11
-conda activate my_env
-pip install -r requirements.txt
-```
+Make sure you have installed Rust compiler. Prepare dependencies and environment.
+
 ```bash
 # Using uv
 uv sync
