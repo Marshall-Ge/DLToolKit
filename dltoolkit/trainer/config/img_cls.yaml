@@ -2,12 +2,119 @@
 defaults:
 
   # <folder_name>@<field_name>.<field_name>: <yaml_file_name>
-  # data: trainer/config/data/img_cls.yaml
-  - data@data : img_cls
-
   # strategy: trainer/config/strategy/accelerate.yaml
   - distributed@strategy : accelerate
 
+  # optim: trainer/config/optim/adam.yaml
+  - optim@optim : adam
+
+  # If the new behavior works for your application, append _self_ to the end of the Defaults List.
+  # If your application requires the previous behavior, insert _self_ as the first item in your Defaults List.
+  - _self_
+
+trainer:
+  # Global training batch size
+  train_batch_size: 256
+
+  # Number of epochs to train
+  max_epochs: 10
+
+  # lr scheduler type
+  lr_scheduler: "cosine_with_min_lr"
+
+  # learning rate
+  learning_rate: 0.001
+
+  # learning rate warmup ratio
+  lr_warmup_ratio: 0.03
+
+  # loss function
+  loss: "cross_entropy"
+
+  # evaluation steps
+  eval_steps: -1
+
+  # save steps
+  save_steps: -1
+
+  # logging steps
+  log_steps: 1
+
+
 model:
-    # model name registered or huggingface model path
-    name_or_path: DummyModel
+  # model name registered or huggingface model path
+  name_or_path: DummyModel
+
+data:
+  # The field in the dataset where the image is located. Default is 'image'.
+  image_key: image
+
+  # The field in the dataset where the text is located. Default is 'label'.
+  text_key: label
+
+  # dataset name registered or huggingface dataset path
+  name_or_path: "ylecun/mnist"
+
+  # dataset split to use
+  split: train
+
+  # fraction of data to use for training
+  probs: "1.0"
+
+  # max number of samples to use
+  max_samples:
+
+  # max length of text input
+  max_len:
+
+  # prompt template
+  input_template:
+
+  # transform for training data
+  img_transform:
+
+    # transform type, "default"
+    type: "default"
+
+# random seed for initialization
+seed: 42
+
+# use model scope for initialization
+use_ms: False
+
+# load_checkpoint
+load_checkpoint: True
+
+# path to checkpoint to load
+ckpt_path: './ckpt/img_cls/'
+
+# directory to save models
+save_path: './ckpt/'
+
+
+tracker:
+    # use wandb for logging
+    use_wandb:
+
+    # wandb project name
+    wandb_project: "dltoolkit"
+
+    # wandb run name
+    wandb_run_name: "img_cls"
+
+    # wandb entity or organization name
+    wandb_org: "your_wandb_org"
+
+    # wandb group name
+    wandb_group: "img_cls_experiments"
+
+    # use tensorboard for logging
+    use_tensorboard: './logs/'
+
+# hydra:
+#  # hydra output directory
+#  output_subdir: output
+#
+#  # logger directory
+#  run:
+#    dir: .

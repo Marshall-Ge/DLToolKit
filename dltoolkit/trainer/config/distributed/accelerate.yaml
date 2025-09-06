@@ -1,0 +1,2 @@
+# mixed precision, choose from "fp16", "bf16"
+mixed_precision:

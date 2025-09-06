@@ -21,3 +21,9 @@ def get_local_model(config, model_type='llm'):
     model = MODEL_REGISTRY.get(name)(config)
 
     return model
+
+def get_image_transform(config):
+    if config.data.img_transform.type == 'default':
+        return None
+    else:
+        raise NotImplementedError

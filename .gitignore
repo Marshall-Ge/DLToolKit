@@ -1,9 +1,12 @@
 .idea
 .DS_Store
 __pycache__/
-data
-sandbox.py
 .venv
-pretrained_model
 *.egg-info/
 dist/
+output/
+**/output/
+logs/
+**/logs/
+ckpt/
+**/ckpt/

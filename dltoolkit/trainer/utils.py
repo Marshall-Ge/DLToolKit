@@ -67,7 +67,7 @@ def blending_datasets(
             data = MsDataset.load(dataset, namespace=namespace)
         else:
             data = load_dataset(dataset, data_dir=data_dir)
-            strategy.print(f"loaded {dataset} from files")
+            strategy.print(f"Loaded {dataset} from files")
 
         # Select dataset
         if dataset_split and dataset_split in data:
@@ -76,8 +76,7 @@ def blending_datasets(
         data_list.append(data)
 
     # merge datasets
-    if strategy.is_rank_0():
-        print(data_list)
+    strategy.print(data_list)
 
     # If probabilities is None, concatenate datasets directly
     if probabilities is None:
