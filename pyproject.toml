@@ -23,7 +23,7 @@ dependencies = [
     "pandas",
     "tensorboard",
     "timm",
-    "torch>=2.1.0"
+    "torch>=2.1.0",
     "torchaudio",
     "torchdata",
     "torchvision",
