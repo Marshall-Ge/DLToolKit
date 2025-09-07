@@ -8,7 +8,7 @@ optim:
   weight_decay: 0.01
 trainer:
   train_batch_size: 256
-  max_epochs: 3
+  max_epochs: 10
   lr_scheduler: cosine_with_min_lr
   learning_rate: 0.001
   lr_warmup_ratio: 0.03

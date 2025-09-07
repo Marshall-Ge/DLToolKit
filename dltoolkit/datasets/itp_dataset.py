@@ -1,6 +1,7 @@
 from PIL.Image import Image
 from torch.utils.data import Dataset
 from typing import Callable,  Optional
+import torch
 
 
 class ImgTxtPairDataset(Dataset):
@@ -67,6 +68,16 @@ class ImgTxtPairDataset(Dataset):
             texts.append(text)
         return images, texts
 
+    def collate_fn(self, batch):
+        images, texts = [], []
+        for item in batch:
+            images.append(item['image'].unsqueeze(0))
+            texts.append(item['text_or_label'])
+        images = torch.cat(images, dim=0)
+        return {
+            'image': images,
+            'text_or_label': torch.tensor(texts),
+        }
 
 if __name__ == '__main__':
     from datasets import load_dataset

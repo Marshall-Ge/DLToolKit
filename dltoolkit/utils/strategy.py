@@ -62,12 +62,13 @@ class AccelerateStrategy(BaseStrategy):
         else:
             raise NotImplementedError()
 
-    def setup_dataloader(self, dataset,pin_memory: bool = False,shuffle=True, drop_last=True):
+    def setup_dataloader(self, dataset,pin_memory: bool = False, shuffle=True, collate_fn=None, drop_last=False):
         return StatefulDataLoader(
             dataset,
             batch_size=self.config.trainer.train_batch_size,
             drop_last=drop_last,
             shuffle=shuffle,
+            collate_fn=collate_fn,
             pin_memory=pin_memory,
         )
 

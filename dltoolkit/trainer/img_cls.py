@@ -60,6 +60,7 @@ def run_img_cls(config) -> None:
         train_dataset,
         True,
         True,
+        collate_fn=train_dataset.collate_fn,
     )
 
     if getattr(config.data, "eval_dataset", None):
@@ -85,6 +86,7 @@ def run_img_cls(config) -> None:
         eval_dataset,
         True,
         False,
+        collate_fn=eval_dataset.collate_fn,
     )
     # scheduler
     num_update_steps_per_epoch = len(train_dataset) // config.trainer.train_batch_size
@@ -226,7 +228,75 @@ class ImgClsTrainer(BaseTrainer):
             self._tensorboard.close()
 
     def save_logs_and_checkpoints(self, config, global_step, step_bar, logs_dict, client_states):
-        pass
+        if global_step % config.trainer.log_steps == 0:
+            # wandb
+            if self._wandb is not None and self.strategy.is_rank0():
+                logs = {"train/%s" % k: v for k, v in {**logs_dict, "global_step": global_step}.items()}
+                self._wandb.log(logs)
+            # TensorBoard
+            elif self._tensorboard is not None and self.strategy.is_rank0():
+                for k, v in logs_dict.items():
+                    self._tensorboard.add_scalar(f"train/{k}", v, global_step)
+
+        # eval
+        if (
+            global_step % config.trainer.eval_steps == 0 or global_step % self.num_update_steps_per_epoch == 0
+        ) and self.eval_dataloader is not None:
+            # do eval when len(dataloader) > 0, avoid zero division in eval.
+            if len(self.eval_dataloader) > 0:
+                self.evaluate(self.eval_dataloader, global_step)
+
+        # save checkpoint
+        # if global_step % config.trainer.save_steps == 0:
+        #     tag = f"global_step{global_step}"
+        #     self.strategy.save_ckpt(
+        #         self.model, args.ckpt_path, tag, args.max_ckpt_num, args.max_ckpt_mem, client_states
+        #     )
+        #     if self.save_hf_ckpt:
+        #         save_path = os.path.join(args.ckpt_path, f"{tag}_hf")
+        #         self.strategy.save_model(self.model, self.tokenizer, save_path)
+
+
+    def evaluate(self, eval_dataloader, global_step):
+        step_bar = tqdm(
+            range(eval_dataloader.__len__()),
+            desc="Eval stage of steps %d" % global_step,
+            disable=not self.strategy.is_rank0(),
+        )
+        self.model.eval()
+        total = 0
+        with torch.no_grad():
+            acc_num = 0
+            loss_sum = 0
+            for batch in eval_dataloader:
+                img, label = batch['image'], batch['text_or_label']
+                outputs = self.model(img)
+                loss = self.loss_fn(outputs, label)
+                preds = torch.argmax(outputs, dim=-1)
+                preds, label = self.strategy.engine.gather_for_metrics((preds, label))
+                total += len(label)
+                acc_num += (preds== label).sum().item()
+                loss_sum += loss.item()
+                step_bar.update()
+
+            acc_mean = acc_num / len(eval_dataloader.dataset)
+            loss_mean = loss_sum / len(eval_dataloader.dataset)
+            bar_dict = {
+                "eval_loss": loss_mean,
+                "acc_mean": acc_mean,
+            }
+
+            logs = self.strategy.all_reduce(bar_dict)
+            step_bar.set_postfix(logs)
+
+            if self.strategy.is_rank0():
+                if self._wandb is not None:
+                    logs = {"eval/%s" % k: v for k, v in {**logs, "global_step": global_step}.items()}
+                    self._wandb.log(logs)
+                elif self._tensorboard is not None:
+                    for k, v in logs.items():
+                        self._tensorboard.add_scalar(f"eval/{k}", v, global_step)
+        self.model.train()  # reset model state
 
 
 if __name__ == "__main__":
