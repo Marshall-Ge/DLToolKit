@@ -1,0 +1,10 @@
+# specify the default per-component configs
+defaults:
+
+  # <folder_name>@<field_name>.<field_name>: <yaml_file_name>
+  # data: trainer/config/data/image_text_pair_data.yaml
+  - data@data : image_text_pair_data
+
+  # strategy: trainer/config/strategy/accelerate.yaml
+  - distributed@strategy : accelerate
+
