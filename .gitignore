@@ -12,3 +12,4 @@ logs/
 **/logs/
 ckpt/
 **/ckpt/
+uv.lock
