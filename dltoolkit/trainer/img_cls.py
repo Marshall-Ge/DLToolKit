@@ -169,6 +169,7 @@ class ImgClsTrainer(BaseTrainer):
             loss,
         )
 
+
     def fit(self, config, consumed_samples=0, num_update_steps_per_epoch=None):
         # get eval and save steps
         if config.trainer.eval_steps == -1:
@@ -177,24 +178,13 @@ class ImgClsTrainer(BaseTrainer):
             config.trainer.save_steps = float("inf")  # do not save ckpt
         self.num_update_steps_per_epoch = num_update_steps_per_epoch
 
-        # TODO: Restore step and start_epoch
-        # global_step = consumed_samples // config.trainer.train_batch_size * self.strategy.accumulated_gradient + 1
-        # start_epoch = consumed_samples // config.trainer.train_batch_size // num_update_steps_per_epoch
-        # consumed_samples = consumed_samples % (num_update_steps_per_epoch * config.trainer.train_batch_size)
+        self.global_step = consumed_samples // config.trainer.train_batch_size  + 1
+        start_epoch = consumed_samples // config.trainer.train_batch_size // num_update_steps_per_epoch
+        consumed_samples = consumed_samples % (num_update_steps_per_epoch * config.trainer.train_batch_size)
 
-        start_epoch = 0
-        global_step = 0
-
-        epoch_bar = tqdm(range(start_epoch, self.epochs), desc="Train epoch", disable=not self.strategy.is_rank0())
-        for epoch in range(start_epoch, self.epochs):
-            #  train
-            step_bar = tqdm(
-                range(self.train_dataloader.__len__()),
-                desc="Train step of epoch %d" % epoch,
-                disable=not self.strategy.is_rank0(),
-            )
+        def train(dataloader, step_bar):
             self.model.train()
-            for batch in self.train_dataloader:
+            for batch in dataloader:
                 self.optimizer.zero_grad()
                 img, label = batch['image'], batch['text_or_label']
                 outputs = self.model(img)
@@ -205,7 +195,7 @@ class ImgClsTrainer(BaseTrainer):
 
                 # optional info
                 logs_dict = {
-                    'loss' : loss.item(),
+                    'loss': loss.item(),
                     "lr": self.scheduler.get_last_lr()[0],
                 }
 
@@ -214,12 +204,28 @@ class ImgClsTrainer(BaseTrainer):
                 step_bar.set_postfix(logs_dict)
                 step_bar.update()
 
-                if global_step % config.trainer.log_steps == 0:
-                    client_states = {"consumed_samples": global_step * config.trainer.train_batch_size}
-                    self.save_logs_and_checkpoints(config, global_step, step_bar, logs_dict, client_states)
+                # logs/checkpoints/evaluation
+                client_states = {"consumed_samples": self.global_step * config.trainer.train_batch_size}
+                self.save_logs_and_checkpoints(config, self.global_step, step_bar, logs_dict, client_states)
 
-                global_step += 1
+                self.global_step += 1
 
+        epoch_bar = tqdm(range(start_epoch, self.epochs), desc="Train epoch", disable=not self.strategy.is_rank0())
+        for epoch in range(start_epoch, self.epochs):
+            #  train
+            step_bar = tqdm(
+                range(self.train_dataloader.__len__()),
+                desc="Train step of epoch %d" % epoch,
+                disable=not self.strategy.is_rank0(),
+            )
+            if isinstance(self.strategy, AccelerateStrategy) and epoch == start_epoch and consumed_samples > 0:
+                # skip the consumed samples in the first epoch
+                skipped_dataloader = self.strategy.engine.skip_first_batches(
+                    self.train_dataloader, consumed_samples // config.trainer.train_batch_size
+                )
+                train(skipped_dataloader, step_bar)
+            else:
+                train(self.train_dataloader, step_bar)
             epoch_bar.update()
 
         if self._wandb is not None and self.strategy.is_rank0():
@@ -247,15 +253,9 @@ class ImgClsTrainer(BaseTrainer):
                 self.evaluate(self.eval_dataloader, global_step)
 
         # save checkpoint
-        # if global_step % config.trainer.save_steps == 0:
-        #     tag = f"global_step{global_step}"
-        #     self.strategy.save_ckpt(
-        #         self.model, args.ckpt_path, tag, args.max_ckpt_num, args.max_ckpt_mem, client_states
-        #     )
-        #     if self.save_hf_ckpt:
-        #         save_path = os.path.join(args.ckpt_path, f"{tag}_hf")
-        #         self.strategy.save_model(self.model, self.tokenizer, save_path)
-
+        if global_step % config.trainer.save_steps == 0:
+            tag = f"global_step{global_step}"
+            self.strategy.save_ckpt(self.model, tag, config.ckpt_path, config.max_ckpt_num, config.max_ckpt_mem, client_states)
 
     def evaluate(self, eval_dataloader, global_step):
         step_bar = tqdm(

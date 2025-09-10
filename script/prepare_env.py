@@ -2,10 +2,10 @@ import os
 import ast
 
 class RegisterModels:
-    def __init__(self, script_dir):
-        self.script_dir = script_dir
-        self.model_dir = os.path.join(script_dir, 'dltoolkit/models')
-        self.utils_init_path = os.path.join(script_dir, 'dltoolkit/utils', '__init__.py')
+    def __init__(self, project_dir):
+        self.project_dir = project_dir
+        self.model_dir = os.path.join(project_dir, 'dltoolkit/models')
+        self.utils_init_path = os.path.join(project_dir, 'dltoolkit/utils', '__init__.py')
         os.makedirs(os.path.dirname(self.utils_init_path), exist_ok=True)
 
     def __call__(self):
@@ -81,8 +81,8 @@ class RegisterModels:
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    registrar = RegisterModels(script_dir)
+    project_dir = os.path.dirname(script_dir)
+    registrar = RegisterModels(project_dir)
     registrar()
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ trainer:
   train_batch_size: 256
 
   # Number of epochs to train
-  max_epochs: 10
+  max_epochs: 15
 
   # lr scheduler type
   lr_scheduler: "cosine_with_min_lr"
@@ -43,7 +43,7 @@ trainer:
 
 model:
   # model name registered or huggingface model path
-  name_or_path: DummyModel
+  name_or_path: CovNet_MNIST
 
 data:
   # The field in the dataset where the image is located. Default is 'image'.
@@ -70,6 +70,9 @@ data:
   # prompt template
   input_template:
 
+  # batch size for training dataloader
+  drop_last: False
+
   # transform for training data
   img_transform:
 
@@ -90,6 +93,12 @@ ckpt_path: './ckpt/img_cls/'
 
 # directory to save models
 save_path: './ckpt/'
+
+# max number of checkpoints to save
+max_ckpt_num: 3
+
+# max checkpoint memory in MB
+max_ckpt_mem: 1000
 
 
 tracker:

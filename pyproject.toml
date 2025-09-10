@@ -7,7 +7,7 @@ include = ["dltoolkit", "dltoolkit.*"]
 
 [project]
 name = "dltoolkit"
-version = "0.1.0"
+version = "0.2.0"
 description = "A convenient toolbox for deep learning"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -33,17 +33,3 @@ dependencies = [
 
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple/"
-
-#[tool.uv.sources]
-#torch = [
-#  { index = "pytorch-cu124", marker = "platform_system != 'Darwin'" },
-#]
-#torchvision = [
-#  { index = "pytorch-cu124", marker = "platform_system != 'Darwin'" },
-#]
-#
-#[[tool.uv.index]]
-#name = "pytorch-cu124"
-#url = "https://download.pytorch.org/whl/cu124"
-#explicit = true
-

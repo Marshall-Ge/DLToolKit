@@ -61,10 +61,13 @@ class BaseTrainer(ABC):
             from torch.utils.tensorboard import SummaryWriter
 
             os.makedirs(self.strategy.config.tracker.use_tensorboard, exist_ok=True)
-            log_dir = os.path.join(self.strategy.config.tracker.use_tensorboard, strategy.config.tracker.wandb_run_name)
+            log_dir = os.path.join(self.strategy.config.tracker.use_tensorboard,
+                                   f'{strategy.config.tracker.wandb_run_name}')
+            self.strategy.print(f"Tracker log_dir: {log_dir}")
             self._tensorboard = SummaryWriter(log_dir=log_dir)
 
         self.num_update_steps_per_epoch = None
+        self.global_step = None
 
     @abstractmethod
     def fit(self, config, consumed_samples, num_update_steps_per_epoch):

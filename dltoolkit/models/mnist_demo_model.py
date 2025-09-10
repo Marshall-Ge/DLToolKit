@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 @MODEL_REGISTRY.register()
-class DummyModel(nn.Module):
+class CovNet_MNIST(nn.Module):
     def __init__(self, config):
-        super(DummyModel, self).__init__()
+        super(CovNet_MNIST, self).__init__()
         self.config = config
         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
