@@ -12,25 +12,22 @@ import os
 from transformers.trainer import get_scheduler
 logger = logging.getLogger(__name__)
 
-@hydra.main(config_path="config", config_name="img_cls", version_base=None)
+@hydra.main(config_path="config", config_name="lm", version_base=None)
 def main(config) -> None:
 
-    run_img_cls(config)
+    run_lm(config)
 
-
-def run_img_cls(config) -> None:
+def run_lm(config) -> None:
     # configure strategy
     strategy = get_strategy(config)
     strategy.setup_distributed()
 
     # configure model
-    model = get_local_or_pretrained_model(config, 'img_cls')
+    model = get_local_or_pretrained_model(config, config.model.type)
     strategy.print(model)
 
-    # prepare tokenizer if needed
-    tokenizer = None
-    # prepare transform if needed
-    transform = get_image_transform(config)
+    # prepare tokenizer
+    tokenizer = get_tokenizer(config)
 
     # configure optimizer
     optimizer = strategy.create_optimizer(model)
@@ -123,12 +120,6 @@ def run_img_cls(config) -> None:
         max_epochs=config.trainer.max_epochs,
         loss=config.trainer.loss,
     )
-
-    strategy.print(f"***** Running training *****")
-    strategy.print(f"  Num examples = {len(train_dataset)}")
-    strategy.print(f"  Num Epochs = {config.trainer.max_epochs}")
-    strategy.print(f"  Instantaneous batch size per device = {config.trainer.train_batch_size}")
-    strategy.print(f"  Total optimization steps = {max_steps}")
 
     trainer.fit(config, consumed_samples, num_update_steps_per_epoch)
 

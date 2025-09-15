@@ -57,10 +57,6 @@ class BaseStrategy(ABC):
     ):
        raise NotImplementedError
 
-    # @abstractmethod
-    def get_steps(self):
-        raise NotImplementedError
-
 
 
 class AccelerateStrategy(BaseStrategy):
