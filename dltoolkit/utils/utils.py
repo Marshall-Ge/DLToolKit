@@ -2,6 +2,8 @@ from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 from dltoolkit.utils.strategy import *
 from fvcore.common.registry import Registry
+import logging
+logger = logging.getLogger(__name__)
 
 MODEL_REGISTRY = Registry("MODEL")
 MODEL_REGISTRY.__doc__ = """
@@ -36,11 +38,16 @@ def get_local_or_pretrained_model(cfg,
 
         # ensure the platform has cuda
         if torch.cuda.is_available():
-            if attn_implementation:
-                assert attn_implementation in ["flash_attention_2", "flash_attention", "triton", "cutlass"], \
-                    f"attn_implementation should be one of ['flash_attention_2', 'flash_attention', 'triton', 'cutlass'], but got {attn_implementation}"
-            else:
-                attn_implementation = "flash_attention_2"
+            try:
+                import flash_attn
+                if attn_implementation:
+                    assert attn_implementation in ["flash_attention_2", "flash_attention", "triton", "cutlass"], \
+                        f"attn_implementation should be one of ['flash_attention_2', 'flash_attention', 'triton', 'cutlass'], but got {attn_implementation}"
+                else:
+                    attn_implementation = "flash_attention_2"
+            except ImportError:
+                attn_implementation = None
+                logger.warning('flash_attn is not installed, will use default attention implementation')
         else:
             attn_implementation = None
         config._attn_implementation = attn_implementation
