@@ -14,10 +14,10 @@ defaults:
 
 trainer:
   # Global training batch size
-  train_batch_size: 256
+  train_batch_size: 32
 
   # Number of epochs to train
-  max_epochs: 15
+  max_epochs: 1
 
   # lr scheduler type
   lr_scheduler: "cosine_with_min_lr"
@@ -76,7 +76,7 @@ use_ms: False
 load_checkpoint: True
 
 # path to checkpoint to load
-ckpt_path: './ckpt/img_cls/'
+ckpt_path: './ckpt/lm/'
 
 # directory to save models
 save_path: './ckpt/'
@@ -96,13 +96,13 @@ tracker:
     wandb_project: "dltoolkit"
 
     # wandb run name
-    wandb_run_name: "img_cls"
+    wandb_run_name: "lm"
 
     # wandb entity or organization name
     wandb_org: "your_wandb_org"
 
     # wandb group name
-    wandb_group: "img_cls_experiments"
+    wandb_group: "lm_experiments"
 
     # use tensorboard for logging
     use_tensorboard: './logs/'

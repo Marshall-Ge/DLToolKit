@@ -251,7 +251,7 @@ class LMTrainer(BaseTrainer):
                 self.evaluate(self.eval_dataloader, global_step)
 
         # save checkpoint
-        if global_step % config.trainer.save_steps == 0:
+        if global_step % config.trainer.save_steps == 0 or global_step % self.num_update_steps_per_epoch == 0:
             tag = f"global_step{global_step}"
             self.strategy.save_ckpt(self.model, tag, config.ckpt_path, config.max_ckpt_num, config.max_ckpt_mem, client_states)
 

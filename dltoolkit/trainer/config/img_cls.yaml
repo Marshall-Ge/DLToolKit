@@ -17,7 +17,7 @@ trainer:
   train_batch_size: 256
 
   # Number of epochs to train
-  max_epochs: 15
+  max_epochs: 1
 
   # lr scheduler type
   lr_scheduler: "cosine_with_min_lr"
