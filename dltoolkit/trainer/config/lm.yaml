@@ -28,9 +28,6 @@ trainer:
   # learning rate warmup ratio
   lr_warmup_ratio: 0.03
 
-  # loss function
-  loss: "cross_entropy"
-
   # evaluation steps
   eval_steps: -1
 
@@ -40,7 +37,6 @@ trainer:
   # logging steps
   log_steps: 1
 
-
 model:
   # model type
   type: "causal_lm"
@@ -49,14 +45,11 @@ model:
   name_or_path: "facebook/opt-125m"
 
 data:
-  # The field in the dataset where the image is located. Default is 'image'.
-  image_key: image
-
-  # The field in the dataset where the text is located. Default is 'label'.
-  text_key: label
+  # The field in the dataset where the text is located. Default is 'text'.
+  text_key: text
 
   # dataset name registered or huggingface dataset path
-  name_or_path: "ylecun/mnist"
+  name_or_path: "Self-GRIT/wikitext-2-raw-v1-preprocessed"
 
   # dataset split to use
   split: train
@@ -68,19 +61,10 @@ data:
   max_samples:
 
   # max length of text input
-  max_len:
-
-  # prompt template
-  input_template:
+  max_len: 512
 
   # batch size for training dataloader
   drop_last: False
-
-  # transform for training data
-  img_transform:
-
-    # transform type, "default"
-    type: "default"
 
 # random seed for initialization
 seed: 42

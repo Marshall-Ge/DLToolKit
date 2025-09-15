@@ -70,8 +70,8 @@ class AccelerateStrategy(BaseStrategy):
         self.engine = Accelerator(**self.config.strategy)
 
     def create_optimizer(self, model):
-        if self.config.optim.type == "Adam":
-            optimizer = optim.Adam(
+        if self.config.optim.type == "AdamW":
+            optimizer = optim.AdamW(
                 model.parameters(),
                 lr=self.config.trainer.learning_rate,
                 betas = self.config.optim.betas,
