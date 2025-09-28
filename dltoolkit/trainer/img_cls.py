@@ -22,6 +22,7 @@ def run_img_cls(config) -> None:
     # configure strategy
     strategy = get_strategy(config)
     strategy.setup_distributed()
+    strategy.print(f"Configs: {config}")
 
     # configure model
     model = get_local_or_pretrained_model(config, 'img_cls')
@@ -131,6 +132,9 @@ def run_img_cls(config) -> None:
     strategy.print(f"  Total optimization steps = {max_steps}")
 
     trainer.fit(config, consumed_samples, num_update_steps_per_epoch)
+
+    # save final model
+    strategy.engine.save_model(model, config.save_path)
 
 
 

@@ -23,6 +23,7 @@ def run_lm(config) -> None:
     # configure strategy
     strategy = get_strategy(config)
     strategy.setup_distributed()
+    strategy.print(f"Configs: {config}")
 
     # configure model
     model = get_local_or_pretrained_model(config, config.model.type)

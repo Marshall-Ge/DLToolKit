@@ -7,7 +7,7 @@ include = ["dltoolkit", "dltoolkit.*"]
 
 [project]
 name = "dltoolkit"
-version = "0.2.0"
+version = "1.0.0"
 description = "A convenient toolbox for deep learning"
 readme = "README.md"
 requires-python = ">=3.10"
