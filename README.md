@@ -2,7 +2,7 @@
 
 A Toolkit for Deep Learning Projects. It provides a set of utilities and modules to streamline the development and deployment of deep learning models.
 
-<img src="Framework.png" alt="Framework" width="40%" height="40%">
+<img src="Framework.png" alt="Framework">
 
 ## Quick Start
 
