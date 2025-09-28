@@ -14,7 +14,7 @@ defaults:
 
 trainer:
   # Global training batch size
-  train_batch_size: 256
+  train_batch_size: 32
 
   # Number of epochs to train
   max_epochs: 1
@@ -28,9 +28,6 @@ trainer:
   # learning rate warmup ratio
   lr_warmup_ratio: 0.03
 
-  # loss function
-  loss: "cross_entropy"
-
   # evaluation steps
   eval_steps: -1
 
@@ -40,20 +37,19 @@ trainer:
   # logging steps
   log_steps: 1
 
-
 model:
+  # model type
+  type: "causal_lm"
+
   # model name registered or huggingface model path
-  name_or_path: CovNet_MNIST
+  name_or_path: "facebook/opt-125m"
 
 data:
-  # The field in the dataset where the image is located. Default is 'image'.
-  image_key: image
-
-  # The field in the dataset where the text is located. Default is 'label'.
-  text_key: label
+  # The field in the dataset where the text is located. Default is 'text'.
+  text_key: text
 
   # dataset name registered or huggingface dataset path
-  name_or_path: "ylecun/mnist"
+  name_or_path: "Self-GRIT/wikitext-2-raw-v1-preprocessed"
 
   # dataset split to use
   split: train
@@ -65,19 +61,10 @@ data:
   max_samples:
 
   # max length of text input
-  max_len:
-
-  # prompt template
-  input_template:
+  max_len: 512
 
   # batch size for training dataloader
   drop_last: False
-
-  # transform for training data
-  img_transform:
-
-    # transform type, "default"
-    type: "default"
 
 # random seed for initialization
 seed: 42
@@ -89,7 +76,7 @@ use_ms: False
 load_checkpoint: True
 
 # path to checkpoint to load
-ckpt_path: './ckpt/img_cls/'
+ckpt_path: './ckpt/lm/'
 
 # directory to save models
 save_path: './ckpt/'
@@ -109,13 +96,13 @@ tracker:
     wandb_project: "dltoolkit"
 
     # wandb run name
-    wandb_run_name: "img_cls"
+    wandb_run_name: "lm"
 
     # wandb entity or organization name
     wandb_org: "your_wandb_org"
 
     # wandb group name
-    wandb_group: "img_cls_experiments"
+    wandb_group: "lm_experiments"
 
     # use tensorboard for logging
     use_tensorboard: './logs/'

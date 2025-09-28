@@ -1,7 +1,7 @@
 import hydra
 from dltoolkit.utils.utils import *
 from dltoolkit.datasets.utils import blending_datasets
-from dltoolkit.datasets import ImgTxtPairDataset
+from dltoolkit.datasets import LMDataset
 from dltoolkit.trainer.base_trainer import BaseTrainer
 
 import logging
@@ -10,28 +10,27 @@ import torch
 from tqdm import tqdm
 import os
 from transformers.trainer import get_scheduler
+import transformers
+
 logger = logging.getLogger(__name__)
 
-@hydra.main(config_path="config", config_name="img_cls", version_base=None)
+@hydra.main(config_path="config", config_name="lm", version_base=None)
 def main(config) -> None:
 
-    run_img_cls(config)
+    run_lm(config)
 
-
-def run_img_cls(config) -> None:
+def run_lm(config) -> None:
     # configure strategy
     strategy = get_strategy(config)
     strategy.setup_distributed()
     strategy.print(f"Configs: {config}")
 
     # configure model
-    model = get_local_or_pretrained_model(config, 'img_cls')
+    model = get_local_or_pretrained_model(config, config.model.type)
     strategy.print(model)
 
-    # prepare tokenizer if needed
-    tokenizer = None
-    # prepare transform if needed
-    transform = get_image_transform(config)
+    # prepare tokenizer
+    tokenizer = get_tokenizer(config)
 
     # configure optimizer
     optimizer = strategy.create_optimizer(model)
@@ -46,13 +45,11 @@ def run_img_cls(config) -> None:
         dataset_split=config.data.split,
     )
 
-    train_dataset = ImgTxtPairDataset(
+    train_dataset = LMDataset(
         train_data,
         strategy,
         config.data.max_len,
-        input_template=config.data.input_template,
         tokenizer = tokenizer,
-        transform=transform,
     )
 
     # prepare dataloader
@@ -60,7 +57,7 @@ def run_img_cls(config) -> None:
         train_dataset,
         True,
         True,
-        collate_fn=train_dataset.collate_fn,
+        collate_fn= transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
     )
 
     if getattr(config.data, "eval_dataset", None):
@@ -73,20 +70,18 @@ def run_img_cls(config) -> None:
     else:
         eval_data = train_data.select(range(int(len(train_data) * 0.01)))
 
-    eval_dataset = ImgTxtPairDataset(
+    eval_dataset = LMDataset(
         eval_data,
         strategy,
         config.data.max_len,
-        input_template=config.data.input_template,
         tokenizer=tokenizer,
-        transform=transform,
     )
 
     eval_dataloader = strategy.setup_dataloader(
         eval_dataset,
         True,
         False,
-        collate_fn=eval_dataset.collate_fn,
+        collate_fn = transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
     )
     # scheduler
     num_update_steps_per_epoch = len(train_dataset) // config.trainer.train_batch_size
@@ -113,7 +108,7 @@ def run_img_cls(config) -> None:
 
     os.makedirs(config.save_path, exist_ok=True)
 
-    trainer = ImgClsTrainer(
+    trainer = LMTrainer(
         model=model,
         strategy=strategy,
         optimizer=optimizer,
@@ -122,7 +117,6 @@ def run_img_cls(config) -> None:
         scheduler=scheduler,
         tokenizer=tokenizer,
         max_epochs=config.trainer.max_epochs,
-        loss=config.trainer.loss,
     )
 
     strategy.print(f"***** Running training *****")
@@ -133,14 +127,11 @@ def run_img_cls(config) -> None:
 
     trainer.fit(config, consumed_samples, num_update_steps_per_epoch)
 
-    # save final model
-    strategy.engine.save_model(model, config.save_path)
 
 
-
-class ImgClsTrainer(BaseTrainer):
+class LMTrainer(BaseTrainer):
     """
-    Trainer for training a image classification model.
+    Trainer for training a language model.
 
     Args:
         model (torch.nn.Module): The model to be trained.
@@ -195,9 +186,8 @@ class ImgClsTrainer(BaseTrainer):
             self.model.train()
             for batch in dataloader:
                 self.optimizer.zero_grad()
-                img, label = batch['image'], batch['text_or_label']
-                outputs = self.model(img)
-                loss = self.loss_fn(outputs, label)
+                outputs = self.model(**batch)
+                loss = outputs.loss
                 self.strategy.engine.backward(loss)
                 self.optimizer.step()
                 self.scheduler.step()
@@ -262,7 +252,7 @@ class ImgClsTrainer(BaseTrainer):
                 self.evaluate(self.eval_dataloader, global_step)
 
         # save checkpoint
-        if global_step % config.trainer.save_steps == 0:
+        if global_step % config.trainer.save_steps == 0 or global_step % self.num_update_steps_per_epoch == 0:
             tag = f"global_step{global_step}"
             self.strategy.save_ckpt(self.model, tag, config.ckpt_path, config.max_ckpt_num, config.max_ckpt_mem, client_states)
 
@@ -273,26 +263,20 @@ class ImgClsTrainer(BaseTrainer):
             disable=not self.strategy.is_rank0(),
         )
         self.model.eval()
-        total = 0
         with torch.no_grad():
-            acc_num = 0
             loss_sum = 0
             for batch in eval_dataloader:
-                img, label = batch['image'], batch['text_or_label']
-                outputs = self.model(img)
-                loss = self.loss_fn(outputs, label)
-                preds = torch.argmax(outputs, dim=-1)
-                preds, label = self.strategy.engine.gather_for_metrics((preds, label))
-                total += len(label)
-                acc_num += (preds== label).sum().item()
+                outputs = self.model(**batch)
+                loss = outputs.loss
                 loss_sum += loss.item()
                 step_bar.update()
 
-            acc_mean = acc_num / len(eval_dataloader.dataset)
             loss_mean = loss_sum / len(eval_dataloader.dataset)
+            perplexity = math.exp(loss_sum)
+
             bar_dict = {
                 "eval_loss": loss_mean,
-                "acc_mean": acc_mean,
+                "perplexity": perplexity,
             }
 
             logs = self.strategy.all_reduce(bar_dict)

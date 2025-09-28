@@ -3,6 +3,8 @@ from accelerate import Accelerator
 import torch.optim as optim
 from torchdata.stateful_dataloader import StatefulDataLoader
 import torch
+import os
+import shutil
 import logging
 
 class BaseStrategy(ABC):
@@ -38,6 +40,23 @@ class BaseStrategy(ABC):
     def all_reduce(self, data, op="mean"):
         raise NotImplementedError
 
+    @abstractmethod
+    def save_ckpt(self, model, tag, save_dir, max_num=3, max_mem=1000, client_states=None):
+        raise NotImplementedError
+
+    @abstractmethod
+    def load_ckpt(
+        self,
+        model,
+        load_dir,
+        tag=None,
+        load_module_strict=True,
+        load_optimizer_states=True,
+        load_lr_scheduler_states=True,
+        load_module_only=False,
+    ):
+       raise NotImplementedError
+
 
 
 class AccelerateStrategy(BaseStrategy):
@@ -51,8 +70,8 @@ class AccelerateStrategy(BaseStrategy):
         self.engine = Accelerator(**self.config.strategy)
 
     def create_optimizer(self, model):
-        if self.config.optim.type == "Adam":
-            optimizer = optim.Adam(
+        if self.config.optim.type == "AdamW":
+            optimizer = optim.AdamW(
                 model.parameters(),
                 lr=self.config.trainer.learning_rate,
                 betas = self.config.optim.betas,
@@ -62,11 +81,11 @@ class AccelerateStrategy(BaseStrategy):
         else:
             raise NotImplementedError()
 
-    def setup_dataloader(self, dataset,pin_memory: bool = False, shuffle=True, collate_fn=None, drop_last=False):
+    def setup_dataloader(self, dataset,pin_memory: bool = False, shuffle=True, collate_fn=None):
         return StatefulDataLoader(
             dataset,
             batch_size=self.config.trainer.train_batch_size,
-            drop_last=drop_last,
+            drop_last=self.config.data.drop_last,
             shuffle=shuffle,
             collate_fn=collate_fn,
             pin_memory=pin_memory,
@@ -106,6 +125,83 @@ class AccelerateStrategy(BaseStrategy):
 
             return data.item() if not is_tensor else data
 
+    def save_ckpt(self, model, tag, save_dir, max_num=3, max_mem=1000, client_states=None):
+        ckpt_dir = str(os.path.join(save_dir, tag))
+        if client_states is None:
+            client_states = {}
+        if not os.path.exists(ckpt_dir):
+            os.makedirs(ckpt_dir, exist_ok=True)
+        # TODO: save best model on dev, use loss/perplexity on whole dev dataset as metric
+        with open(os.path.join(save_dir, f'chosen_ckpt.txt'), 'w') as f:
+            f.write(tag)
+        if self.is_rank0():
+            os.makedirs(save_dir, exist_ok=True)
+            MAX_SIZE = max_mem * 1024**3  # Convert GB to bytes
+
+            while True:
+                subdirs = sorted(
+                    [
+                        (os.path.join(save_dir, d), os.path.getmtime(os.path.join(save_dir, d)))
+                        for d in os.listdir(save_dir)
+                        if os.path.isdir(os.path.join(save_dir, d))
+                    ],
+                    key=lambda x: x[1],
+                )
+                total_size = sum(
+                    os.path.getsize(os.path.join(dirpath, f))
+                    for subdir, _ in subdirs
+                    for dirpath, _, filenames in os.walk(subdir)
+                    for f in filenames
+                )
+
+                if len(subdirs) > max_num or total_size > MAX_SIZE:
+                    oldest_dir = subdirs[0][0]
+                    if os.path.exists(oldest_dir):
+                        shutil.rmtree(oldest_dir)
+                        self.print(f"Deleted oldest ckpt {oldest_dir}")
+                else:
+                    break
+
+            # save client states
+            import pickle
+            with open(os.path.join(ckpt_dir, 'client_states.pkl'), "wb") as f:
+                pickle.dump(client_states, f) # type: ignore[arg-type]
+
+        # TODO: we may need to consider hf models in the future
+        # save local model's ckpt
+        self.engine.save_state(output_dir=ckpt_dir)
+
+        self.print(f"Saved ckpt to {ckpt_dir}")
+
+        # Explicitly release memory
+        import gc
+
+        gc.collect()
+
+    def load_ckpt(
+        self,
+        model,
+        load_dir,
+        tag=None,
+        load_module_strict=True,
+        load_optimizer_states=True,
+        load_lr_scheduler_states=True,
+        load_module_only=False,
+    ):
+        with open(os.path.join(load_dir, f'chosen_ckpt.txt'), 'r') as f:
+            tag = f.readline() if tag is None else tag
+        assert tag is not None, "ckpt path should exist"
+        ckpt_dir = os.path.join(load_dir, tag)
+        # TODO: Somehow we need to set weights_only=False, related issue:
+        # https://github.com/huggingface/accelerate/issues/3539
+        self.engine.load_state(ckpt_dir, load_kwargs={'weights_only': False}) # type: ignore[arg-type]
+
+        import pickle
+        with open(os.path.join(ckpt_dir, 'client_states.pkl'), "rb") as f: # type: ignore[arg-type]
+            client_states = pickle.load(f)
+
+        # To alight the implementation of load_ckpt in Deepspeed strategy
+        return None, client_states
 
 # class DeepspeedStrategy(BaseStrategy):
 #     """

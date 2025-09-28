@@ -1,2 +1,3 @@
-# For successfully registering models, we need to import them here
-from dltoolkit.models.dummy_model import DummyModel
+# Automatically generated import statements - Do not modify manually
+from dltoolkit.models.mnist_demo_model import CovNet_MNIST
+# The automatically generated import statement has ended
