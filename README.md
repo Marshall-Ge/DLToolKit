@@ -25,7 +25,7 @@ By default, we use tensorboard as logs tracker(wandb also supported) and you can
 tensorboard --logdir=./logs
 ```
 
-## Haw to Use & Develop
+## How to Use & Develop
 Normally, you should use this toolkit as a template, you need to customize your own dataset, model but rather than focus on the training and evaluation process. Below 
 is the recommend steps to use this toolkit:
 
