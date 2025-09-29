@@ -31,7 +31,6 @@ def get_local_or_pretrained_model(cfg,
                                   device_map=None,
                                   **kwargs,
                                   ):
-    model = None
 
     if model_type == 'causal_lm':
         config = AutoConfig.from_pretrained(cfg.model.name_or_path, trust_remote_code=True)
@@ -62,7 +61,7 @@ def get_local_or_pretrained_model(cfg,
             **kwargs,
         )
 
-    elif model_type == 'img_cls':
+    else:
         name = cfg.model.name_or_path
         model = MODEL_REGISTRY.get(name)(cfg)
 
