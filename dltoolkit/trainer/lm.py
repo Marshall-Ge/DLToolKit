@@ -127,6 +127,9 @@ def run_lm(config) -> None:
 
     trainer.fit(config, consumed_samples, num_update_steps_per_epoch)
 
+    # save final model
+    strategy.engine.save_model(model, config.save_path)
+
 
 
 class LMTrainer(BaseTrainer):
