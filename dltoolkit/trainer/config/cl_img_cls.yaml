@@ -44,10 +44,10 @@ trainer:
   log_steps: 1
 
   # number of classes for first task
-  init_cls: 6
+  init_cls: 2
 
   # number of classes to add per task
-  increment: 1
+  increment: 2
 
   # replay buffer size
   capacity: 5000

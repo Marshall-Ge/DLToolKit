@@ -117,36 +117,6 @@ class ResNet18(ResNet):
 class incResNet18(ResNet):
     def __init__(self, config):
         super(incResNet18, self).__init__(BasicBlock, [2, 2, 2, 2], config)
-        self.n_tasks = None
-        self.router = None
-
-    def construct_net(self, n_tasks):
-        self.n_tasks = n_tasks
-        self.router = nn.Linear(512 * self.expansion, n_tasks)
-        for t in range(0, n_tasks):
-            adapter = nn.Linear(512 * self.expansion, self.config.data.num_classes)
-            setattr(self, f'adapter_{t}_fc', adapter)
-
-    def forward(self, x, task_id):
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
-
-        x = self.avgpool(x)
-        x = torch.flatten(x, 1)
-        if task_id == 0:
-            x = self.fc(x)
-        else:
-            chosen_task_fc = self.router(x).argmax(dim=1)
-            adapter = getattr(self, f'adapter_{chosen_task_fc}_fc') if chosen_task_fc != 0 else self.fc
-            x = adapter(x)
-        return x
 
 @MODEL_REGISTRY.register()
 class ResNet34(ResNet):

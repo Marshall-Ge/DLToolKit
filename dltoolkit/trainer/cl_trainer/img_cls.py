@@ -80,7 +80,6 @@ def run_cl_img_cls(config) -> None:
     max_steps = math.ceil(config.trainer.max_epochs * num_update_steps_per_epoch * train_manager.nb_tasks)
 
     # strategy prepare
-    model.construct_net(train_manager.nb_classes)
     model = (strategy.engine.prepare(model))
 
     # load checkpoint
@@ -196,7 +195,7 @@ class CLImgClsTrainer(BaseTrainer):
                     label = torch.cat([label, replay_labels.to(label.device)])
 
 
-                outputs = self.model(img, task_id)
+                outputs = self.model(img)
 
                 loss = self.loss_fn(outputs, label)
                 self.strategy.engine.backward(loss)
@@ -221,7 +220,6 @@ class CLImgClsTrainer(BaseTrainer):
 
         task_bar = tqdm(range(start_task_id, self.train_manager.nb_tasks), desc="Train task", disable=not self.strategy.is_rank0())
         for task_id in range(start_task_id, self.train_manager.nb_tasks):
-            self._freeze_before_increment_training(task_id)
             self.refresh_optimizer(task_id)
             start = sum(self.train_manager._increments[:task_id])
             end = start + self.train_manager._increments[task_id]
@@ -246,7 +244,7 @@ class CLImgClsTrainer(BaseTrainer):
                 shuffle=False,
             )
 
-            replay_loader = self.get_loader(int(self.config.trainer.train_batch_size) // 2)
+            replay_loader = self.get_loader(int(self.config.trainer.train_batch_size))
 
             self.train_dataloader, self.replay_loader, self.eval_dataloader, self.all_eval_dataloader = self.strategy.engine.prepare(
                 train_dataloader, replay_loader, eval_dataloader, all_eval_dataloader)
@@ -317,7 +315,7 @@ class CLImgClsTrainer(BaseTrainer):
             loss_sum = 0
             for batch in eval_dataloader:
                 img, label = batch['data'], batch['label']
-                outputs = self.model(img, task_id)
+                outputs = self.model(img)
                 loss = self.loss_fn(outputs, label)
                 preds = torch.argmax(outputs, dim=-1)
                 preds, label = self.strategy.engine.gather_for_metrics((preds, label))
@@ -382,42 +380,18 @@ class CLImgClsTrainer(BaseTrainer):
 
     def refresh_optimizer(self, task_id):
         # re-define optimizer for new added parameters
-        if task_id == 0:
-            self.optimizer = self.strategy.create_optimizer(self.model)
-            self.scheduler = get_scheduler(
-                self.config.trainer.lr_scheduler,
-                self.optimizer,
-                num_warmup_steps=math.ceil(self.config.trainer.max_epochs * self.num_update_steps_per_epoch * self.config.trainer.lr_warmup_ratio),
-                num_training_steps=math.ceil(self.config.trainer.max_epochs * self.num_update_steps_per_epoch),
-                scheduler_specific_kwargs={"min_lr": self.config.trainer.learning_rate * 0.1},
-            )
-        else:
-            adapter = getattr(self.model, f'adapter_{task_id}_fc', None)
-            self.optimizer = self.strategy.create_optimizer(adapter, lr=self.config.trainer.inc_learning_rate)
-            self.scheduler = get_scheduler(
-                self.config.trainer.lr_scheduler,
-                self.optimizer,
-                num_warmup_steps=math.ceil(self.config.trainer.max_epochs * self.num_update_steps_per_epoch * self.config.trainer.lr_warmup_ratio),
-                num_training_steps=math.ceil(self.config.trainer.max_epochs * self.num_update_steps_per_epoch),
-                scheduler_specific_kwargs={"min_lr": self.config.trainer.inc_learning_rate * 0.01},
-            )
+        self.optimizer = self.strategy.create_optimizer(self.model)
+        self.scheduler = get_scheduler(
+            self.config.trainer.lr_scheduler,
+            self.optimizer,
+            num_warmup_steps=math.ceil(self.config.trainer.max_epochs * self.num_update_steps_per_epoch * self.config.trainer.lr_warmup_ratio),
+            num_training_steps=math.ceil(self.config.trainer.max_epochs * self.num_update_steps_per_epoch),
+            scheduler_specific_kwargs={"min_lr": self.config.trainer.learning_rate * 0.1},
+        )
         self.optimizer, self.scheduler = self.strategy.engine.prepare(self.optimizer, self.scheduler)
 
     def _freeze_before_increment_training(self, task_id):
-        if task_id == 0:
-            for name, param in self.model.named_parameters():
-                if f'adapter' in name:
-                    param.requires_grad = False
-                else:
-                    param.requires_grad = True
-        else:
-            for name, param in self.model.named_parameters():
-                if f'adapter_{task_id}' in name or 'fc' in name:
-                    param.requires_grad = True
-                else:
-                    param.requires_grad = False
-
-        self.model = self.strategy.engine.prepare(self.model)
+        pass
 
 
 if __name__ == "__main__":
