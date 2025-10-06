@@ -29,11 +29,11 @@ class BaseStrategy(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_optimizer(self, model):
+    def create_optimizer(self, model, lr=None):
         raise NotImplementedError
 
     @abstractmethod
-    def setup_dataloader(self, dataset,pin_memory: bool = False,shuffle=True, drop_last=True):
+    def setup_dataloader(self, dataset, batch_size: int = None, pin_memory: bool = False,shuffle=True, collate_fn=None):
         raise NotImplementedError
 
     @abstractmethod
@@ -69,11 +69,11 @@ class AccelerateStrategy(BaseStrategy):
     def setup_distributed(self):
         self.engine = Accelerator(**self.config.strategy)
 
-    def create_optimizer(self, model):
+    def create_optimizer(self, model, lr=None):
         if self.config.optim.type == "AdamW":
             optimizer = optim.AdamW(
                 model.parameters(),
-                lr=self.config.trainer.learning_rate,
+                lr=self.config.trainer.learning_rate if lr is None else lr,
                 betas = self.config.optim.betas,
                 weight_decay=self.config.optim.weight_decay,
             )
@@ -81,10 +81,10 @@ class AccelerateStrategy(BaseStrategy):
         else:
             raise NotImplementedError()
 
-    def setup_dataloader(self, dataset,pin_memory: bool = False, shuffle=True, collate_fn=None):
+    def setup_dataloader(self, dataset, batch_size = None , pin_memory: bool = False, shuffle=True, collate_fn=None):
         return StatefulDataLoader(
             dataset,
-            batch_size=self.config.trainer.train_batch_size,
+            batch_size= batch_size if batch_size else self.config.trainer.train_batch_size,
             drop_last=self.config.data.drop_last,
             shuffle=shuffle,
             collate_fn=collate_fn,

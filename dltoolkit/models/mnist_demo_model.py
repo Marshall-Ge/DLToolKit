@@ -14,7 +14,7 @@ class CovNet_MNIST(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
         self.fc1 = nn.Linear(64 * 7 * 7, 128)
-        self.fc2 = nn.Linear(128, 10)
+        self.fc2 = nn.Linear(128, config.data.num_classes)
 
         self.dropout = nn.Dropout(0.5)
 
