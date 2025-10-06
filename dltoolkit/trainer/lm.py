@@ -55,8 +55,8 @@ def run_lm(config) -> None:
     # prepare dataloader
     train_dataloader = strategy.setup_dataloader(
         train_dataset,
-        True,
-        True,
+        pin_memory=True,
+        shuffle=True,
         collate_fn= transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
     )
 
@@ -79,8 +79,8 @@ def run_lm(config) -> None:
 
     eval_dataloader = strategy.setup_dataloader(
         eval_dataset,
-        True,
-        False,
+        pin_memory=True,
+        shuffle=False,
         collate_fn = transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False)
     )
     # scheduler

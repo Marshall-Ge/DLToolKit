@@ -58,8 +58,8 @@ def run_img_cls(config) -> None:
     # prepare dataloader
     train_dataloader = strategy.setup_dataloader(
         train_dataset,
-        True,
-        True,
+        pin_memory=True,
+        shuffle=True,
         collate_fn=train_dataset.collate_fn,
     )
 
@@ -84,10 +84,11 @@ def run_img_cls(config) -> None:
 
     eval_dataloader = strategy.setup_dataloader(
         eval_dataset,
-        True,
-        False,
+        pin_memory=True,
+        shuffle=False,
         collate_fn=eval_dataset.collate_fn,
     )
+
     # scheduler
     num_update_steps_per_epoch = len(train_dataset) // config.trainer.train_batch_size
     max_steps = math.ceil(config.trainer.max_epochs * num_update_steps_per_epoch)
@@ -255,7 +256,7 @@ class ImgClsTrainer(BaseTrainer):
 
         # eval
         if (
-            global_step % config.trainer.eval_steps == 0 or global_step % self.num_update_steps_per_epoch == 0
+            global_step % config.trainer.eval_steps == 0
         ) and self.eval_dataloader is not None:
             # do eval when len(dataloader) > 0, avoid zero division in eval.
             if len(self.eval_dataloader) > 0:

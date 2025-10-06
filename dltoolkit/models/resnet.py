@@ -1,0 +1,157 @@
+import torch
+import torch.nn as nn
+from dltoolkit.utils.utils import MODEL_REGISTRY
+
+class BasicBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, stride=1, downsample=None, expansion=1):
+        super(BasicBlock, self).__init__()
+        self.expansion = expansion
+        self.conv1 = nn.Conv2d(
+            in_channels, out_channels, kernel_size=3, stride=stride,
+            padding=1, bias=False
+        )
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.conv2 = nn.Conv2d(
+            out_channels, out_channels, kernel_size=3, stride=1,
+            padding=1, bias=False
+        )
+        self.bn2 = nn.BatchNorm2d(out_channels)
+
+        self.downsample = downsample
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        identity = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+
+
+class ResNet(nn.Module):
+    def __init__(self, block, layers, config):
+        super(ResNet, self).__init__()
+        self.config = config
+        self.expansion = int(config.model.param.get('expansion'))
+        self.in_channels = 64  # initial number of channels
+
+        self.conv1 = nn.Conv2d(
+            3, 64, kernel_size=7, stride=2, padding=3, bias=False
+        )
+        self.bn1 = nn.BatchNorm2d(64)
+        self.relu = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+        self.layer1 = self._make_layer(block, 64, layers[0])
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
+
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc = nn.Linear(512 * self.expansion, config.data.num_classes)
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+
+    def _make_layer(self, block, out_channels, blocks, stride=1):
+        downsample = None
+        if stride != 1 or self.in_channels != out_channels * self.expansion:
+            downsample = nn.Sequential(
+                nn.Conv2d(
+                    self.in_channels, out_channels * self.expansion,
+                    kernel_size=1, stride=stride, bias=False
+                ),
+                nn.BatchNorm2d(out_channels * self.expansion),
+            )
+
+        layers = []
+        layers.append(block(
+            self.in_channels, out_channels, stride, downsample, self.expansion
+        ))
+        self.in_channels = out_channels * self.expansion
+
+        for _ in range(1, blocks):
+            layers.append(block(self.in_channels, out_channels, expansion=self.expansion))
+
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+
+        return x
+
+@MODEL_REGISTRY.register()
+class ResNet18(ResNet):
+    def __init__(self, config):
+        super(ResNet18, self).__init__(BasicBlock, [2, 2, 2, 2], config)
+
+
+@MODEL_REGISTRY.register()
+class incResNet18(ResNet):
+    def __init__(self, config):
+        super(incResNet18, self).__init__(BasicBlock, [2, 2, 2, 2], config)
+        self.n_tasks = None
+        self.router = None
+
+    def construct_net(self, n_tasks):
+        self.n_tasks = n_tasks
+        self.router = nn.Linear(512 * self.expansion, n_tasks)
+        for t in range(0, n_tasks):
+            adapter = nn.Linear(512 * self.expansion, self.config.data.num_classes)
+            setattr(self, f'adapter_{t}_fc', adapter)
+
+    def forward(self, x, task_id):
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        if task_id == 0:
+            x = self.fc(x)
+        else:
+            chosen_task_fc = self.router(x).argmax(dim=1)
+            adapter = getattr(self, f'adapter_{chosen_task_fc}_fc') if chosen_task_fc != 0 else self.fc
+            x = adapter(x)
+        return x
+
+@MODEL_REGISTRY.register()
+class ResNet34(ResNet):
+    def __init__(self, config):
+        super(ResNet34, self).__init__(BasicBlock, [3, 4, 6, 3], config)
+
+if __name__ == "__main__":
+    pass

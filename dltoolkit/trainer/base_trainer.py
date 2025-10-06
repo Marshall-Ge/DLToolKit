@@ -10,10 +10,10 @@ class BaseTrainer(ABC):
         self,
         model,
         strategy: BaseStrategy,
-        optimizer,
-        train_dataloader,
-        eval_dataloader,
-        scheduler,
+        optimizer = None,
+        train_dataloader = None,
+        eval_dataloader = None,
+        scheduler = None,
         tokenizer = None,
         max_epochs: int = 2,
         loss="cross_entropy",
@@ -68,6 +68,9 @@ class BaseTrainer(ABC):
 
         self.num_update_steps_per_epoch = None
         self.global_step = None
+
+        # for task incremental learning
+        self.num_update_steps_per_task = None
 
     @abstractmethod
     def fit(self, config, consumed_samples, num_update_steps_per_epoch):

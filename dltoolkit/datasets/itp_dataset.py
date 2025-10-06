@@ -31,15 +31,15 @@ class ImgTxtPairDataset(Dataset):
         self.max_length = max_length
         self.strategy = strategy
         self.input_template = input_template
-        self.images, self.texts = self.prepare_data(dataset)
+        self.data, self.label = self.prepare_data(dataset)
 
     def __len__(self):
-        return len(self.images)
+        return len(self.data)
 
     def __getitem__(self, idx):
         return {
-            'image': self.images[idx],
-            'text_or_label': self.texts[idx],
+            'image': self.data[idx],
+            'text_or_label': self.label[idx],
         }
 
     def prepare_data(self, dataset):
