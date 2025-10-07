@@ -47,7 +47,7 @@ class BaseTrainer(ABC):
                 project=strategy.config.tracker.wandb_project,
                 group=strategy.config.tracker.wandb_group,
                 name=strategy.config.tracker.wandb_run_name,
-                config=strategy.config.__dict__,
+                config=strategy.config.__dict__['_content'],
                 reinit=True,
             )
 
