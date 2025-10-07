@@ -124,7 +124,7 @@ tracker:
     wandb_run_name: "img_cls"
 
     # wandb entity or organization name
-    wandb_org: "your_wandb_org"
+    wandb_org:
 
     # wandb group name
     wandb_group: "img_cls_experiments"
