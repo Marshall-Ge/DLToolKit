@@ -14,7 +14,7 @@ import transformers
 
 logger = logging.getLogger(__name__)
 
-@hydra.main(config_path="config", config_name="lm", version_base=None)
+@hydra.main(config_path="../config", config_name="lm", version_base=None)
 def main(config) -> None:
 
     run_lm(config)
@@ -127,6 +127,9 @@ def run_lm(config) -> None:
 
     trainer.fit(config, consumed_samples, num_update_steps_per_epoch)
 
+    # save final model
+    model = strategy.engine.unwrap_model(model)
+    model.save_pretrained(config.save_path)
 
 
 class LMTrainer(BaseTrainer):

@@ -12,7 +12,7 @@ import os
 from transformers.trainer import get_scheduler
 logger = logging.getLogger(__name__)
 
-@hydra.main(config_path="../config", config_name="cl_img_cls", version_base=None)
+@hydra.main(config_path="../../config", config_name="cl_img_cls", version_base=None)
 def main(config) -> None:
 
     run_cl_img_cls(config)
@@ -182,6 +182,8 @@ class CLImgClsTrainer(BaseTrainer):
             for batch in dataloader:
                 self.optimizer.zero_grad()
                 img, label = batch['data'], batch['label']
+
+                # replay buffer
                 if self.replay_loader:
                     try:
                         replay_batch = next(replay_iter)
@@ -364,7 +366,7 @@ class CLImgClsTrainer(BaseTrainer):
 
     def add(self, dataset):
         import random
-        samples = [dataset[i] for i in random.sample(range(len(dataset)), min(1000, len(dataset)))]
+        samples = [dataset[i] for i in random.sample(range(len(dataset)), min(self.config.buffer_per_task, len(dataset)))]
         self.buffer.extend(samples)
         if len(self.buffer) > self.capacity:
             random.shuffle(self.buffer)

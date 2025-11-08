@@ -47,7 +47,7 @@ class ResNet(nn.Module):
         self.in_channels = 64  # initial number of channels
 
         self.conv1 = nn.Conv2d(
-            3, 64, kernel_size=7, stride=2, padding=3, bias=False
+            int(config.model.param.get('in_channel')), 64, kernel_size=7, stride=2, padding=3, bias=False
         )
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)

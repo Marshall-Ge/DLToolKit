@@ -1,0 +1,43 @@
+# specify the default per-component configs
+defaults:
+
+  # <folder_name>@<field_name>.<field_name>: <yaml_file_name>
+  # strategy: trainer/config/strategy/accelerate.yaml
+  - distributed@strategy : accelerate
+
+  # If the new behavior works for your application, append _self_ to the end of the Defaults List.
+  # If your application requires the previous behavior, insert _self_ as the first item in your Defaults List.
+  - _self_
+model:
+  # model name registered or huggingface model path
+  name_or_path: ResNet18
+
+  # some hyperparameters of model settings
+  param: {'in_channel': 1, 'expansion': 1}
+
+data:
+  # number of classes
+  num_classes: 10
+
+# model_path1 for kl calculation
+model_dir1: './outputs/mnist_resnet18_1'
+
+# param for model 1
+model_param1: {'in_channel': 1, 'expansion': 1}
+
+# model_path2 for kl calculation
+model_dir2: './outputs/cifar10_resnet18_1'
+
+# param for model 2
+model_param2: {'in_channel': 3, 'expansion': 1}
+
+# skipped layers for kl calculation
+skipped_layers: ['conv1.weight']
+
+# hydra:
+#  # hydra output directory
+#  output_subdir: output
+#
+#  # logger directory
+#  run:
+#    dir: .

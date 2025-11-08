@@ -17,16 +17,13 @@ trainer:
   train_batch_size: 256
 
   # Number of epochs to train
-  max_epochs: 5
+  max_epochs: 1
 
   # lr scheduler type
   lr_scheduler: "cosine_with_min_lr"
 
   # learning rate
   learning_rate: 0.001
-
-  # learning rate for incremental task training
-  inc_learning_rate: 0.001
 
   # learning rate warmup ratio
   lr_warmup_ratio: 0.03
@@ -43,42 +40,35 @@ trainer:
   # logging steps
   log_steps: 1
 
-  # number of classes for first task
-  init_cls: 2
-
-  # number of classes to add per task
-  increment: 2
-
-  # replay buffer size
-  capacity: 5000
 
 model:
   # model name registered or huggingface model path
-  name_or_path: incResNet18
+  name_or_path: CovNet_MNIST
 
   # some hyperparameters of model settings
-  param: {'expansion': 1}
+  param: {'in_channel': 1}
 
 data:
+  # number of classes
   num_classes: 10
 
   # The field in the dataset where the image is located. Default is 'image'.
-  image_key: img
+  image_key: image
 
   # The field in the dataset where the text is located. Default is 'label'.
   text_key: label
 
   # dataset name registered or huggingface dataset path
-  name_or_path: "uoft-cs/cifar10"
+  name_or_path: "ylecun/mnist"
 
   # dataset split to use
   split: train
 
   # dataset use for evaluation
-  eval_dataset: "uoft-cs/cifar10"
+  eval_dataset:
 
   # dataset split to use for evaluation
-  eval_split: test
+  eval_split:
 
   # fraction of data to use for training
   probs: "1.0"
@@ -94,9 +84,6 @@ data:
 
   # batch size for training dataloader
   drop_last: False
-
-  # shuffle the training data when preparing dataloader per task
-  cls_shuffle: True
 
   # transform for training data
   img_transform:
@@ -114,7 +101,7 @@ use_ms: False
 load_checkpoint: True
 
 # path to checkpoint to load
-ckpt_path: './ckpt/cl_img_cls/'
+ckpt_path: './ckpt/img_cls/'
 
 # directory to save models
 save_path: './ckpt/'
@@ -125,6 +112,7 @@ max_ckpt_num: 3
 # max checkpoint memory in MB
 max_ckpt_mem: 1000
 
+
 tracker:
     # use wandb for logging
     use_wandb:
@@ -133,18 +121,16 @@ tracker:
     wandb_project: "dltoolkit"
 
     # wandb run name
-    wandb_run_name: "cl_img_cls"
+    wandb_run_name: "img_cls"
 
     # wandb entity or organization name
-    wandb_org: "your_wandb_org"
+    wandb_org:
 
     # wandb group name
-    wandb_group: "cl_img_cls_experiments"
+    wandb_group: "img_cls_experiments"
 
     # use tensorboard for logging
     use_tensorboard: './logs/'
-
-    visualize_confusion_matrix: True
 
 # hydra:
 #  # hydra output directory

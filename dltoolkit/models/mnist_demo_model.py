@@ -7,7 +7,7 @@ class CovNet_MNIST(nn.Module):
     def __init__(self, config):
         super(CovNet_MNIST, self).__init__()
         self.config = config
-        self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(int(config.model.param.get('in_channel')), 32, kernel_size=3, padding=1)
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)

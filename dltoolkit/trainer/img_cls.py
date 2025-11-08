@@ -12,9 +12,8 @@ import os
 from transformers.trainer import get_scheduler
 logger = logging.getLogger(__name__)
 
-@hydra.main(config_path="config", config_name="img_cls", version_base=None)
+@hydra.main(config_path="../config", config_name="img_cls", version_base=None)
 def main(config) -> None:
-
     run_img_cls(config)
 
 
@@ -202,9 +201,22 @@ class ImgClsTrainer(BaseTrainer):
                 self.strategy.engine.backward(loss)
                 self.optimizer.step()
                 self.scheduler.step()
+                # paramter info
+                params = []
+                for param in self.model.parameters():
+                    params.append(param.view(-1))
+                params_tensor = torch.cat(params)
+                p_mean = params_tensor.mean().item()
+                p_std = params_tensor.std().item()
+                p_max_val = params_tensor.max().item()
+                p_min_val = params_tensor.min().item()
 
                 # optional info
                 logs_dict = {
+                    'p_mean': p_mean,
+                    'p_std' : p_std,
+                    'p_max_val' : p_max_val,
+                    'p_min_val' : p_min_val,
                     'loss': loss.item(),
                     "lr": self.scheduler.get_last_lr()[0],
                 }
