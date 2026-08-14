@@ -1,0 +1,146 @@
+{
+  "info": {
+    "id": "ses_0016e2c99ffeodDczqcJQlnfQ3",
+    "slug": "silent-garden",
+    "projectID": "0ca010b5d9923649cb2c360ef2a93a057b979233",
+    "directory": "/Users/marshall/Projects/DLToolKit",
+    "path": "",
+    "title": "主机1测试请求",
+    "agent": "build",
+    "model": {
+      "id": "big-pickle",
+      "providerID": "opencode"
+    },
+    "version": "1.18.18",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 90,
+      "output": 11,
+      "reasoning": 52,
+      "cache": {
+        "read": 8192,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1786682397542,
+      "updated": 1786682400850
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786682397554
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_ffe91d371001q0kGtRzyJ2uGzh",
+        "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "测试，请求来自主机1",
+          "id": "prt_ffe91d372001b7ncuml00ONRI2",
+          "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
+          "messageID": "msg_ffe91d371001q0kGtRzyJ2uGzh"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_ffe91d371001q0kGtRzyJ2uGzh",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8345,
+          "input": 90,
+          "output": 11,
+          "reasoning": 52,
+          "cache": {
+            "write": 0,
+            "read": 8192
+          }
+        },
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "time": {
+          "created": 1786682397567,
+          "completed": 1786682400844
+        },
+        "finish": "stop",
+        "id": "msg_ffe91d37f001NYB93qOhR2w2q1",
+        "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3"
+      },
+      "parts": [
+        {
+          "snapshot": "229b49bc6f4df606dca116a05d0c76c199254001",
+          "type": "step-start",
+          "id": "prt_ffe91dd24001gHDmH1sIce7vO4",
+          "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
+          "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user says \"测试，请求来自主机1\" which means \"Test, request from host 1\" in Chinese. This seems like a test message. Let me respond appropriately.\n\nThis appears to be a test message. I should respond concisely.",
+          "time": {
+            "start": 1786682400246,
+            "end": 1786682400675
+          },
+          "id": "prt_ffe91ddf6001XR40WN3Johlkz8",
+          "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
+          "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"
+        },
+        {
+          "type": "text",
+          "text": "收到，测试成功。请问需要我做什么？",
+          "time": {
+            "start": 1786682400677,
+            "end": 1786682400771
+          },
+          "id": "prt_ffe91dfa50013sWK6V2ooSsmmI",
+          "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
+          "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "229b49bc6f4df606dca116a05d0c76c199254001",
+          "type": "step-finish",
+          "tokens": {
+            "total": 8345,
+            "input": 90,
+            "output": 11,
+            "reasoning": 52,
+            "cache": {
+              "write": 0,
+              "read": 8192
+            }
+          },
+          "cost": 0,
+          "id": "prt_ffe91e036001y5IElxFXZtE5ly",
+          "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
+          "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "info": {
+    "id": "ses_00199c493ffeyo4YEZV4mineeg",
+    "slug": "calm-circuit",
+    "projectID": "0ca010b5d9923649cb2c360ef2a93a057b979233",
+    "directory": "/Users/marshall/Projects/DLToolKit",
+    "path": "",
+    "title": "测试请求来自主机1",
+    "agent": "build",
+    "model": {
+      "id": "big-pickle",
+      "providerID": "opencode"
+    },
+    "version": "1.18.18",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 90,
+      "output": 12,
+      "reasoning": 65,
+      "cache": {
+        "read": 8192,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1786679540588,
+      "updated": 1786691785134
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786679540603
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_ffe663b7b0011d4CembGmkNCFa",
+        "sessionID": "ses_00199c493ffeyo4YEZV4mineeg"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "测试，请求来自主机1",
+          "id": "prt_ffe663b7c001buVr3MO7uZTjDE",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe663b7b0011d4CembGmkNCFa"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_ffe663b7b0011d4CembGmkNCFa",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8359,
+          "input": 90,
+          "output": 12,
+          "reasoning": 65,
+          "cache": {
+            "write": 0,
+            "read": 8192
+          }
+        },
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "time": {
+          "created": 1786679540616,
+          "completed": 1786679545339
+        },
+        "finish": "stop",
+        "id": "msg_ffe663b880013SKDwIcNQSYYNb",
+        "sessionID": "ses_00199c493ffeyo4YEZV4mineeg"
+      },
+      "parts": [
+        {
+          "snapshot": "dc53edccab7129b2976e974f8b292292c62743b7",
+          "type": "step-start",
+          "id": "prt_ffe664a2a001OUz6CvRuiVwUL0",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe663b880013SKDwIcNQSYYNb"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user says \"测试，请求来自主机1\" which means \"Test, request from host 1\". This seems like a test message. Let me respond concisely. This appears to be a network/connection test message. I should acknowledge it briefly.\n\nLet me just respond simply - they're testing the connection.",
+          "time": {
+            "start": 1786679544552,
+            "end": 1786679545139
+          },
+          "id": "prt_ffe664ae8001diWcBScMjCaGNs",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe663b880013SKDwIcNQSYYNb"
+        },
+        {
+          "type": "text",
+          "text": "收到，连接正常。有什么需要我帮忙的吗？",
+          "time": {
+            "start": 1786679545140,
+            "end": 1786679545282
+          },
+          "id": "prt_ffe664d3400116Eo3DSZh3hiNz",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe663b880013SKDwIcNQSYYNb"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "dc53edccab7129b2976e974f8b292292c62743b7",
+          "type": "step-finish",
+          "tokens": {
+            "total": 8359,
+            "input": 90,
+            "output": 12,
+            "reasoning": 65,
+            "cache": {
+              "write": 0,
+              "read": 8192
+            }
+          },
+          "cost": 0,
+          "id": "prt_ffe664de0001lnPLygR7G4g88y",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe663b880013SKDwIcNQSYYNb"
+        }
+      ]
+    },
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786679741789
+        },
+        "summary": {
+          "diffs": []
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "id": "msg_ffe694d5d0010WIScDM6C12sn1",
+        "sessionID": "ses_00199c493ffeyo4YEZV4mineeg"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "测试，请求来自主机2",
+          "id": "prt_ffe694d5f001BRqPPBxkrKTFju",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe694d5d0010WIScDM6C12sn1"
+        }
+      ]
+    },
+    {
+      "info": {
+        "role": "assistant",
+        "time": {
+          "created": 1786679741809,
+          "completed": 1786679745200
+        },
+        "parentID": "msg_ffe694d5d0010WIScDM6C12sn1",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8863,
+          "input": 5909,
+          "output": 10,
+          "reasoning": 0,
+          "cache": {
+            "read": 2944,
+            "write": 0
+          }
+        },
+        "finish": "stop",
+        "id": "msg_ffe694d71001bHSL6IMy9RWhr6",
+        "sessionID": "ses_00199c493ffeyo4YEZV4mineeg"
+      },
+      "parts": [
+        {
+          "type": "step-start",
+          "snapshot": "6ba48ab9b7a0f7abba772f517893810dc1755691",
+          "id": "prt_ffe695651001BeEwo8zYczI69u",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe694d71001bHSL6IMy9RWhr6"
+        },
+        {
+          "type": "text",
+          "text": "收到，连接正常。等待你的指令。",
+          "time": {
+            "start": 1786679744946,
+            "end": 1786679745062
+          },
+          "id": "prt_ffe6959b2001PKrTA1QoeLrPQa",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe694d71001bHSL6IMy9RWhr6"
+        },
+        {
+          "type": "step-finish",
+          "reason": "stop",
+          "snapshot": "6ba48ab9b7a0f7abba772f517893810dc1755691",
+          "cost": 0,
+          "tokens": {
+            "total": 8863,
+            "input": 5909,
+            "output": 10,
+            "reasoning": 0,
+            "cache": {
+              "read": 2944,
+              "write": 0
+            }
+          },
+          "id": "prt_ffe695a6c001u18tJB4QicxwSk",
+          "sessionID": "ses_00199c493ffeyo4YEZV4mineeg",
+          "messageID": "msg_ffe694d71001bHSL6IMy9RWhr6"
+        }
+      ]
+    }
+  ]
+}

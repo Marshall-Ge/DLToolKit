@@ -1,0 +1,255 @@
+{
+  "info": {
+    "id": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+    "slug": "witty-engine",
+    "projectID": "0ca010b5d9923649cb2c360ef2a93a057b979233",
+    "directory": "/Users/marshall/Projects/DLToolKit",
+    "path": "",
+    "title": "主机1连接测试",
+    "agent": "build",
+    "model": {
+      "id": "big-pickle",
+      "providerID": "opencode"
+    },
+    "version": "1.18.18",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 104,
+      "output": 24,
+      "reasoning": 101,
+      "cache": {
+        "read": 16512,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1786683686934,
+      "updated": 1786683701442
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786683686947
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_ffea58023001Gc7Tvhdmxi80QE",
+        "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "测试，连接来自主机1",
+          "id": "prt_ffea58025001fWMaFhg0cc5ReL",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea58023001Gc7Tvhdmxi80QE"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_ffea58023001Gc7Tvhdmxi80QE",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8327,
+          "input": 90,
+          "output": 11,
+          "reasoning": 34,
+          "cache": {
+            "write": 0,
+            "read": 8192
+          }
+        },
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "time": {
+          "created": 1786683686961,
+          "completed": 1786683690329
+        },
+        "finish": "stop",
+        "id": "msg_ffea58031001uNEhRmMEnlf7if",
+        "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH"
+      },
+      "parts": [
+        {
+          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
+          "type": "step-start",
+          "id": "prt_ffea58a840010FsGV0QIK1ecXO",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user wrote \"测试，连接来自主机1\" which means \"Test, connection from host 1\". This seems like a test message. Let me respond briefly.",
+          "time": {
+            "start": 1786683689803,
+            "end": 1786683690179
+          },
+          "id": "prt_ffea58b4b001JZ3nKmg8x8n5zD",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
+        },
+        {
+          "type": "text",
+          "text": "收到，连接正常。有什么需要帮忙的？",
+          "time": {
+            "start": 1786683690180,
+            "end": 1786683690267
+          },
+          "id": "prt_ffea58cc4001wsAnjpmA0Dzt4A",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
+          "type": "step-finish",
+          "tokens": {
+            "total": 8327,
+            "input": 90,
+            "output": 11,
+            "reasoning": 34,
+            "cache": {
+              "write": 0,
+              "read": 8192
+            }
+          },
+          "cost": 0,
+          "id": "prt_ffea58d44001hIycXJh7ifNf2g",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
+        }
+      ]
+    },
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786683699225
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_ffea5b019001gIAnV8T03xNRlp",
+        "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "时刻1300",
+          "id": "prt_ffea5b01b0019SPhgtV24mxtHO",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea5b019001gIAnV8T03xNRlp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_ffea5b019001gIAnV8T03xNRlp",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8414,
+          "input": 14,
+          "output": 13,
+          "reasoning": 67,
+          "cache": {
+            "write": 0,
+            "read": 8320
+          }
+        },
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "time": {
+          "created": 1786683699235,
+          "completed": 1786683701438
+        },
+        "finish": "stop",
+        "id": "msg_ffea5b023001mP7c7WFGV8HCLi",
+        "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH"
+      },
+      "parts": [
+        {
+          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
+          "type": "step-start",
+          "id": "prt_ffea5b44200172MjHSDrI2JG3G",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user sent \"时刻1300\" which means \"time 1300\" (13:00). This seems like a continuation of a test or maybe they're testing something. Let me just acknowledge briefly.\n\nActually, this might be part of a test script or some kind of communication test. I should just respond concisely.",
+          "time": {
+            "start": 1786683700550,
+            "end": 1786683701249
+          },
+          "id": "prt_ffea5b546001AUfFj3gvv9OYtn",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
+        },
+        {
+          "type": "text",
+          "text": "收到，时刻 1300。还有其它测试吗？",
+          "time": {
+            "start": 1786683701251,
+            "end": 1786683701381
+          },
+          "id": "prt_ffea5b803001Phh46JKJOpaLLp",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
+          "type": "step-finish",
+          "tokens": {
+            "total": 8414,
+            "input": 14,
+            "output": 13,
+            "reasoning": 67,
+            "cache": {
+              "write": 0,
+              "read": 8320
+            }
+          },
+          "cost": 0,
+          "id": "prt_ffea5b8a1001gYir5wEh1AnzV9",
+          "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
+          "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
+        }
+      ]
+    }
+  ]
+}

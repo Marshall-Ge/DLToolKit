@@ -1,0 +1,146 @@
+{
+  "info": {
+    "id": "ses_00419caedffelDCrrB6tJkmjwb",
+    "slug": "witty-engine",
+    "projectID": "0ca010b5d9923649cb2c360ef2a93a057b979233",
+    "directory": "/Users/marshall/Projects/DLToolKit",
+    "path": "",
+    "title": "主机1测试请求",
+    "agent": "build",
+    "model": {
+      "id": "big-pickle",
+      "providerID": "opencode"
+    },
+    "version": "1.18.18",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 8282,
+      "output": 12,
+      "reasoning": 68,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1786637595922,
+      "updated": 1786637599811
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786637595935
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_ffbe6351f001C5KSZtn8NWAbFu",
+        "sessionID": "ses_00419caedffelDCrrB6tJkmjwb"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "测试，请求来自主机1",
+          "id": "prt_ffbe63520001Azgtq5RJdDGOFV",
+          "sessionID": "ses_00419caedffelDCrrB6tJkmjwb",
+          "messageID": "msg_ffbe6351f001C5KSZtn8NWAbFu"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_ffbe6351f001C5KSZtn8NWAbFu",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8362,
+          "input": 8282,
+          "output": 12,
+          "reasoning": 68,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "time": {
+          "created": 1786637595947,
+          "completed": 1786637599803
+        },
+        "finish": "stop",
+        "id": "msg_ffbe6352b001uOTlpI5BrLw4OF",
+        "sessionID": "ses_00419caedffelDCrrB6tJkmjwb"
+      },
+      "parts": [
+        {
+          "snapshot": "daefba0425b849c1178b8d6414110859d4013057",
+          "type": "step-start",
+          "id": "prt_ffbe63e7d001R64aSOzf80cJfO",
+          "sessionID": "ses_00419caedffelDCrrB6tJkmjwb",
+          "messageID": "msg_ffbe6352b001uOTlpI5BrLw4OF"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user says \"测试，请求来自主机1\" which means \"Test, request from host 1\" in Chinese. This is a test message. Let me respond concisely.\n\nThe working directory is /Users/marshall/Projects/DLToolKit. This seems like just a test ping. Let me respond appropriately and briefly.",
+          "time": {
+            "start": 1786637599426,
+            "end": 1786637599615
+          },
+          "id": "prt_ffbe642c20010H7VNzefHHGWbN",
+          "sessionID": "ses_00419caedffelDCrrB6tJkmjwb",
+          "messageID": "msg_ffbe6352b001uOTlpI5BrLw4OF"
+        },
+        {
+          "type": "text",
+          "text": "收到，测试成功。有什么需要我帮忙的吗？",
+          "time": {
+            "start": 1786637599616,
+            "end": 1786637599716
+          },
+          "id": "prt_ffbe643800015F45CX0anzHO75",
+          "sessionID": "ses_00419caedffelDCrrB6tJkmjwb",
+          "messageID": "msg_ffbe6352b001uOTlpI5BrLw4OF"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "daefba0425b849c1178b8d6414110859d4013057",
+          "type": "step-finish",
+          "tokens": {
+            "total": 8362,
+            "input": 8282,
+            "output": 12,
+            "reasoning": 68,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          "cost": 0,
+          "id": "prt_ffbe64411001YO6FL6R4sWS9on",
+          "sessionID": "ses_00419caedffelDCrrB6tJkmjwb",
+          "messageID": "msg_ffbe6352b001uOTlpI5BrLw4OF"
+        }
+      ]
+    }
+  ]
+}

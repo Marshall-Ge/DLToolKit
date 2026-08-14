@@ -1,0 +1,146 @@
+{
+  "info": {
+    "id": "ses_003d00f1bffeNgXhMI8Mc3XBNl",
+    "slug": "playful-pixel",
+    "projectID": "0ca010b5d9923649cb2c360ef2a93a057b979233",
+    "directory": "/Users/marshall/Projects/DLToolKit",
+    "path": "",
+    "title": "主机1连接测试",
+    "agent": "build",
+    "model": {
+      "id": "big-pickle",
+      "providerID": "opencode"
+    },
+    "version": "1.18.18",
+    "summary": {
+      "additions": 0,
+      "deletions": 0,
+      "files": 0
+    },
+    "cost": 0,
+    "tokens": {
+      "input": 90,
+      "output": 9,
+      "reasoning": 43,
+      "cache": {
+        "read": 8192,
+        "write": 0
+      }
+    },
+    "time": {
+      "created": 1786642428132,
+      "updated": 1786642431575
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "role": "user",
+        "time": {
+          "created": 1786642428149
+        },
+        "agent": "build",
+        "model": {
+          "providerID": "opencode",
+          "modelID": "big-pickle"
+        },
+        "summary": {
+          "diffs": []
+        },
+        "id": "msg_ffc2ff0f50013NwSL5NSsKuCss",
+        "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl"
+      },
+      "parts": [
+        {
+          "type": "text",
+          "text": "测试，连接来自主机1",
+          "id": "prt_ffc2ff0f70019tHjCa3zX3tgr7",
+          "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl",
+          "messageID": "msg_ffc2ff0f50013NwSL5NSsKuCss"
+        }
+      ]
+    },
+    {
+      "info": {
+        "parentID": "msg_ffc2ff0f50013NwSL5NSsKuCss",
+        "role": "assistant",
+        "mode": "build",
+        "agent": "build",
+        "path": {
+          "cwd": "/Users/marshall/Projects/DLToolKit",
+          "root": "/Users/marshall/Projects/DLToolKit"
+        },
+        "cost": 0,
+        "tokens": {
+          "total": 8334,
+          "input": 90,
+          "output": 9,
+          "reasoning": 43,
+          "cache": {
+            "write": 0,
+            "read": 8192
+          }
+        },
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "time": {
+          "created": 1786642428165,
+          "completed": 1786642431569
+        },
+        "finish": "stop",
+        "id": "msg_ffc2ff105001Bwf29RqQnwecnp",
+        "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl"
+      },
+      "parts": [
+        {
+          "snapshot": "79f47585a38c3933c6a188233ae3060fa281c906",
+          "type": "step-start",
+          "id": "prt_ffc2ffab8001pWzV2CaFOnVJu5",
+          "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl",
+          "messageID": "msg_ffc2ff105001Bwf29RqQnwecnp"
+        },
+        {
+          "type": "reasoning",
+          "text": "The user is speaking Chinese. \"测试，连接来自主机1\" means \"Test, connection from host 1\". This seems like a testing message, maybe checking the connection. Let me respond concisely.",
+          "time": {
+            "start": 1786642430965,
+            "end": 1786642431400
+          },
+          "id": "prt_ffc2ffbf5001n4RsTWEoNu9htx",
+          "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl",
+          "messageID": "msg_ffc2ff105001Bwf29RqQnwecnp"
+        },
+        {
+          "type": "text",
+          "text": "连接正常。需要我做什么吗？",
+          "time": {
+            "start": 1786642431402,
+            "end": 1786642431517
+          },
+          "id": "prt_ffc2ffdaa001RCkIk79RzaUu3h",
+          "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl",
+          "messageID": "msg_ffc2ff105001Bwf29RqQnwecnp"
+        },
+        {
+          "reason": "stop",
+          "snapshot": "79f47585a38c3933c6a188233ae3060fa281c906",
+          "type": "step-finish",
+          "tokens": {
+            "total": 8334,
+            "input": 90,
+            "output": 9,
+            "reasoning": 43,
+            "cache": {
+              "write": 0,
+              "read": 8192
+            }
+          },
+          "cost": 0,
+          "id": "prt_ffc2ffe36001SJBjspiUXQhPKq",
+          "sessionID": "ses_003d00f1bffeNgXhMI8Mc3XBNl",
+          "messageID": "msg_ffc2ff105001Bwf29RqQnwecnp"
+        }
+      ]
+    }
+  ]
+}
