@@ -39,13 +39,13 @@
         "time": {
           "created": 1786682397554
         },
+        "summary": {
+          "diffs": []
+        },
         "agent": "build",
         "model": {
           "providerID": "opencode",
           "modelID": "big-pickle"
-        },
-        "summary": {
-          "diffs": []
         },
         "id": "msg_ffe91d371001q0kGtRzyJ2uGzh",
         "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3"
@@ -62,8 +62,14 @@
     },
     {
       "info": {
-        "parentID": "msg_ffe91d371001q0kGtRzyJ2uGzh",
         "role": "assistant",
+        "time": {
+          "created": 1786682397567,
+          "completed": 1786682400844
+        },
+        "parentID": "msg_ffe91d371001q0kGtRzyJ2uGzh",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
         "mode": "build",
         "agent": "build",
         "path": {
@@ -77,15 +83,9 @@
           "output": 11,
           "reasoning": 52,
           "cache": {
-            "write": 0,
-            "read": 8192
+            "read": 8192,
+            "write": 0
           }
-        },
-        "modelID": "big-pickle",
-        "providerID": "opencode",
-        "time": {
-          "created": 1786682397567,
-          "completed": 1786682400844
         },
         "finish": "stop",
         "id": "msg_ffe91d37f001NYB93qOhR2w2q1",
@@ -93,8 +93,8 @@
       },
       "parts": [
         {
-          "snapshot": "229b49bc6f4df606dca116a05d0c76c199254001",
           "type": "step-start",
+          "snapshot": "229b49bc6f4df606dca116a05d0c76c199254001",
           "id": "prt_ffe91dd24001gHDmH1sIce7vO4",
           "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
           "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"
@@ -122,20 +122,20 @@
           "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"
         },
         {
+          "type": "step-finish",
           "reason": "stop",
           "snapshot": "229b49bc6f4df606dca116a05d0c76c199254001",
-          "type": "step-finish",
+          "cost": 0,
           "tokens": {
             "total": 8345,
             "input": 90,
             "output": 11,
             "reasoning": 52,
             "cache": {
-              "write": 0,
-              "read": 8192
+              "read": 8192,
+              "write": 0
             }
           },
-          "cost": 0,
           "id": "prt_ffe91e036001y5IElxFXZtE5ly",
           "sessionID": "ses_0016e2c99ffeodDczqcJQlnfQ3",
           "messageID": "msg_ffe91d37f001NYB93qOhR2w2q1"

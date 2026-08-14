@@ -39,13 +39,13 @@
         "time": {
           "created": 1786683686947
         },
+        "summary": {
+          "diffs": []
+        },
         "agent": "build",
         "model": {
           "providerID": "opencode",
           "modelID": "big-pickle"
-        },
-        "summary": {
-          "diffs": []
         },
         "id": "msg_ffea58023001Gc7Tvhdmxi80QE",
         "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH"
@@ -62,8 +62,14 @@
     },
     {
       "info": {
-        "parentID": "msg_ffea58023001Gc7Tvhdmxi80QE",
         "role": "assistant",
+        "time": {
+          "created": 1786683686961,
+          "completed": 1786683690329
+        },
+        "parentID": "msg_ffea58023001Gc7Tvhdmxi80QE",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
         "mode": "build",
         "agent": "build",
         "path": {
@@ -77,15 +83,9 @@
           "output": 11,
           "reasoning": 34,
           "cache": {
-            "write": 0,
-            "read": 8192
+            "read": 8192,
+            "write": 0
           }
-        },
-        "modelID": "big-pickle",
-        "providerID": "opencode",
-        "time": {
-          "created": 1786683686961,
-          "completed": 1786683690329
         },
         "finish": "stop",
         "id": "msg_ffea58031001uNEhRmMEnlf7if",
@@ -93,8 +93,8 @@
       },
       "parts": [
         {
-          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
           "type": "step-start",
+          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
           "id": "prt_ffea58a840010FsGV0QIK1ecXO",
           "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
           "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
@@ -122,20 +122,20 @@
           "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
         },
         {
+          "type": "step-finish",
           "reason": "stop",
           "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
-          "type": "step-finish",
+          "cost": 0,
           "tokens": {
             "total": 8327,
             "input": 90,
             "output": 11,
             "reasoning": 34,
             "cache": {
-              "write": 0,
-              "read": 8192
+              "read": 8192,
+              "write": 0
             }
           },
-          "cost": 0,
           "id": "prt_ffea58d44001hIycXJh7ifNf2g",
           "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
           "messageID": "msg_ffea58031001uNEhRmMEnlf7if"
@@ -148,13 +148,13 @@
         "time": {
           "created": 1786683699225
         },
+        "summary": {
+          "diffs": []
+        },
         "agent": "build",
         "model": {
           "providerID": "opencode",
           "modelID": "big-pickle"
-        },
-        "summary": {
-          "diffs": []
         },
         "id": "msg_ffea5b019001gIAnV8T03xNRlp",
         "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH"
@@ -171,8 +171,14 @@
     },
     {
       "info": {
-        "parentID": "msg_ffea5b019001gIAnV8T03xNRlp",
         "role": "assistant",
+        "time": {
+          "created": 1786683699235,
+          "completed": 1786683701438
+        },
+        "parentID": "msg_ffea5b019001gIAnV8T03xNRlp",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
         "mode": "build",
         "agent": "build",
         "path": {
@@ -186,15 +192,9 @@
           "output": 13,
           "reasoning": 67,
           "cache": {
-            "write": 0,
-            "read": 8320
+            "read": 8320,
+            "write": 0
           }
-        },
-        "modelID": "big-pickle",
-        "providerID": "opencode",
-        "time": {
-          "created": 1786683699235,
-          "completed": 1786683701438
         },
         "finish": "stop",
         "id": "msg_ffea5b023001mP7c7WFGV8HCLi",
@@ -202,8 +202,8 @@
       },
       "parts": [
         {
-          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
           "type": "step-start",
+          "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
           "id": "prt_ffea5b44200172MjHSDrI2JG3G",
           "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
           "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
@@ -231,20 +231,20 @@
           "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
         },
         {
+          "type": "step-finish",
           "reason": "stop",
           "snapshot": "7d2de29378dcc6bb08175cd98ce1a6233cf3121d",
-          "type": "step-finish",
+          "cost": 0,
           "tokens": {
             "total": 8414,
             "input": 14,
             "output": 13,
             "reasoning": 67,
             "cache": {
-              "write": 0,
-              "read": 8320
+              "read": 8320,
+              "write": 0
             }
           },
-          "cost": 0,
           "id": "prt_ffea5b8a1001gYir5wEh1AnzV9",
           "sessionID": "ses_0015a7fe9ffelNcTeZa4tD26TH",
           "messageID": "msg_ffea5b023001mP7c7WFGV8HCLi"
