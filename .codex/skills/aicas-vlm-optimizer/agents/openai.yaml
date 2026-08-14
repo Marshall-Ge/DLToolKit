@@ -1,0 +1,11 @@
+interface:
+  display_name: "AICAS VLM Optimizer"
+  short_description: "Invent novel operator & system optimizations — speculative decode, warp specialization, FP8 kernels, async pipelines"
+  default_prompt: >
+    Profile the Qwen3-VL model to find the #1 bottleneck, then implement
+    a NOVEL optimization from: speculative decoding, chunked prefill with
+    compute-memory overlap, persistent decode kernels, warp-specialized
+    attention, cross-layer KV sharing, FP8 compute kernels, async
+    vision-LM pipelining, adaptive kernel dispatch, or decode batch
+    coalescing.  Do NOT tune configs or rehash standard recipes.  Write
+    new research-grade code.  Verify 100% accuracy.
